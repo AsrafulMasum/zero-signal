@@ -22,15 +22,6 @@ const MainLayout: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* main container with header */}
-            {/* <div className="col-span-10 bg-[#FFF4E9]">
-                <div className="px-4 h-[calc(100vh-97px)]">
-                    <div className="h-full overflow-y-auto rounded-md pt-4">
-                        <Outlet />
-                    </div>
-                </div>
-            </div> */}
         </div>
     );
 };

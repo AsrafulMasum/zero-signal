@@ -7,6 +7,7 @@ import { User } from '../../../types/types';
 import { StatCard } from '../dashboard';
 import { GiKeyring, GiMoneyStack } from 'react-icons/gi';
 import { PiUserCircleLight, PiUsersThree } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
 
 const userData: User[] = [
     { key: '1', serialId: 'S-001', userName: 'John Doe', userType: 'Admin', address: 'Locker A1', status: 'Active' },
@@ -128,6 +129,8 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
     //     setIsModalVisible(true);
     // };
 
+    const filteredUser = userData?.slice(0, 4);
+
     const handleModalClose = () => {
         setIsModalVisible(false);
         setSelectedUser(null);
@@ -204,41 +207,50 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-4">
-                <StatCard
-                    icon={<PiUsersThree />}
-                    title="Total Users"
-                    value="3,802"
-                    className="bg-[#2E4F3E1A] text-[#2E4F3E]"
-                />
-                <StatCard
-                    icon={<PiUserCircleLight />}
-                    title="Total Hosts"
-                    value="68"
-                    className="bg-[#00A63E1A] text-[#00A63E]"
-                />
-                <StatCard
-                    icon={<GiKeyring />}
-                    title="Active Today"
-                    value="169"
-                    className="bg-[#095CC71A] text-[#095CC7]"
-                />
-                <StatCard
-                    icon={<GiMoneyStack />}
-                    title="Monthly Revenue"
-                    value="AED 45,085"
-                    className="bg-[#9810FA1A] text-[#9810FA]"
-                />
-            </div>
+            {!dashboard && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-4">
+                    <StatCard
+                        icon={<PiUsersThree />}
+                        title="Total Users"
+                        value="3,802"
+                        className="bg-[#2E4F3E1A] text-[#2E4F3E]"
+                    />
+                    <StatCard
+                        icon={<PiUserCircleLight />}
+                        title="Total Hosts"
+                        value="68"
+                        className="bg-[#00A63E1A] text-[#00A63E]"
+                    />
+                    <StatCard
+                        icon={<GiKeyring />}
+                        title="Active Today"
+                        value="169"
+                        className="bg-[#095CC71A] text-[#095CC7]"
+                    />
+                    <StatCard
+                        icon={<GiMoneyStack />}
+                        title="Monthly Revenue"
+                        value="AED 45,085"
+                        className="bg-[#9810FA1A] text-[#9810FA]"
+                    />
+                </div>
+            )}
             <div className="rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
-                    <HeaderTitle title="Customers" />
-                    <Input
-                        placeholder="Search"
-                        className=""
-                        style={{ width: 280, height: 40 }}
-                        prefix={<i className="bi bi-search"></i>}
-                    />
+                    <HeaderTitle title={dashboard ? 'Recent users' : 'Users List'} />
+
+                    {dashboard ? (
+                        <Link className="text-primary font-medium" to="/users">
+                            See All
+                        </Link>
+                    ) : (
+                        <Input
+                            placeholder="Search"
+                            className=""
+                            style={{ width: 280, height: 40 }}
+                            prefix={<i className="bi bi-search"></i>}
+                        />
+                    )}
                 </div>
                 <ConfigProvider
                     theme={{
@@ -247,15 +259,16 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                         },
                         components: {
                             Table: {
-                                headerBg: '#FAF5E8',
+                                headerBg: '#F5E9DF',
                                 headerColor: '#2E4F3E',
+                                colorBgContainer: '#FAF5E8',
                             },
                         },
                     }}
                 >
                     <Table
                         columns={columns}
-                        dataSource={userData}
+                        dataSource={dashboard ? filteredUser : userData}
                         pagination={dashboard ? false : { pageSize: 8, total: userData.length }}
                         className="custom-table"
                     />
