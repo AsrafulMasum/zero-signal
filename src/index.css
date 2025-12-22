@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-primary: #2E4F3E;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    background-color: #FFF4E9;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #dfdfdf00;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2E4F3E;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #353355;
+}
+
+.ant-form-item {
+    margin-bottom: 15px !important;
+}
+
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+    border-inline-end: none !important;
+}
+
+/* sidebar */
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+    color: #2E4F3E !important;
+}
+
+.ant-select-selector {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ant-menu-item a {
+    transition: none !important;
+}
+
+/* Remove focus ring from Ant Design inputs */
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+    box-shadow: none !important;
+    outline: none !important;
+    border-color: transparent !important;
+}
