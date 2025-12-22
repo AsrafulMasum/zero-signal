@@ -5,9 +5,9 @@ export default {
         extend: {
             colors: {
                 primary: '#2E4F3E',
-                primaryText: '#808080',
+                primaryText: '#1A1B1B',
                 secondaryText: '#7B7B7B',
-                textBlack: '#272728',
+                textBlack: '#1A1B1B',
                 shadeColor: '#F9F0EC',
                 overlay: '#F6F7F8',
                 bg: '#FFF4E9',

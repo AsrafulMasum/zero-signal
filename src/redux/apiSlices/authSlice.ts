@@ -1,77 +1,86 @@
+import { api } from '../api/baseApi';
 
-import { getFromLocalStorage } from "../../utils/local-storage";
-import { api } from "../api/baseApi";
-const resetToken = getFromLocalStorage("resetToken")
 const authSlice = api.injectEndpoints({
-    endpoints: (builder) => ({ 
-
+    endpoints: (builder) => ({
         otpVerify: builder.mutation({
             query: (data) => {
                 return {
-                    method: "POST",
-                    url: "/auth/verify-email",
+                    method: 'POST',
+                    url: '/auth/verify-email',
                     body: data,
-                }
-            }
-        }), 
+                };
+            },
+        }),
 
         login: builder.mutation({
             query: (data) => {
                 return {
-                    method: "POST",
-                    url: "/auth/login",
-                    body: data
-                }
+                    method: 'POST',
+                    url: '/auth/login',
+                    body: data,
+                };
             },
-        }), 
+        }),
 
         forgetPassword: builder.mutation({
             query: (data) => {
                 return {
-                    method: "POST",
-                    url: "/auth/forget-password",
-                    body: data
-                }
-            }
-        }), 
+                    method: 'POST',
+                    url: '/auth/forget-password',
+                    body: data,
+                };
+            },
+        }),
 
         resetPassword: builder.mutation({
-            query: (value) => ({
-                url: "/auth/reset-password",
-                headers: { authorization: resetToken ?? undefined },
-                method: "POST",
-                body: value
-            })
+            query: (value) => {
+                return {
+                    url: '/auth/reset-password',
+                    headers: { authorization: value?.token },
+                    method: 'POST',
+                    body: value?.payload,
+                };
+            },
         }),
 
         changePassword: builder.mutation({
             query: (data) => {
                 return {
-                    method: "POST",
-                    url: "/auth/change-password",
+                    method: 'POST',
+                    url: '/auth/change-password',
                     body: data,
-                }
-            }
+                };
+            },
         }),
 
         updateProfile: builder.mutation({
             query: (data) => {
                 return {
-                    method: "PATCH",
-                    url: "/user/me",
+                    method: 'PATCH',
+                    url: '/user/me',
                     body: data,
-                }
-            }
+                };
+            },
+        }),
+
+        resendOTP: builder.mutation({
+            query: (data) => {
+                return {
+                    method: 'POST',
+                    url: '/auth/forget-password',
+                    body: data,
+                };
+            },
         }),
 
         profile: builder.query({
             query: () => {
                 return {
-                    url: "/user/me",
-                }
+                    url: '/user/me',
+                };
             },
         }),
-    })
+    }),
 });
 
 export const {
@@ -81,5 +90,6 @@ export const {
     useResetPasswordMutation,
     useChangePasswordMutation,
     useUpdateProfileMutation,
+    useResendOTPMutation,
     useProfileQuery,
 } = authSlice;
