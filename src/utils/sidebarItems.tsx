@@ -1,13 +1,13 @@
-
 import { TSidebarItem } from './generateSidebarItems';
-import { LuClipboardList, LuLayoutDashboard} from 'react-icons/lu';
+import { LuClipboardList, LuLayoutDashboard } from 'react-icons/lu';
 import { TbBook } from 'react-icons/tb';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { GiKeyring, GiMoneyStack } from 'react-icons/gi';
+import { GiMoneyStack } from 'react-icons/gi';
 import { PiUserGear, PiUsers } from 'react-icons/pi';
 import { LiaCcMastercard } from 'react-icons/lia';
 import { LucideUserRound } from 'lucide-react';
 import { CgLock } from 'react-icons/cg';
+import { MdOutlineCategory } from 'react-icons/md';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -17,22 +17,22 @@ const sidebarItems: TSidebarItem[] = [
         icon: <LuLayoutDashboard size={24} />,
     },
     {
-        key: 'locker-management',
-        label: 'Locker Management',
-        path: 'locker-management',
-        icon: <GiKeyring size={24} />,
-    },
-    // {
-    //     key: 'categories',
-    //     label: 'Categories',
-    //     path: 'categories',
-    //     icon: <MdOutlineCategory size={24} />,
-    // },
-    {
         key: 'users',
         label: 'Users',
         path: 'users',
         icon: <PiUsers size={24} />,
+    },
+    // {
+    //     key: 'locker-management',
+    //     label: 'Locker Management',
+    //     path: 'locker-management',
+    //     icon: <GiKeyring size={24} />,
+    // },
+    {
+        key: 'categories',
+        label: 'Categories',
+        path: 'categories',
+        icon: <MdOutlineCategory size={24} />,
     },
     {
         key: 'subscriptions',

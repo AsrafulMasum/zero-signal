@@ -192,10 +192,9 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
 
                 return (
                     <p
-                        className="capitalize px-1 py-0.5 text-center rounded-lg w-28"
+                        className="capitalize px-1 py-0.5 rounded-lg w-28"
                         style={{
                             color: currentStyle.color,
-                            backgroundColor: currentStyle.bg,
                         }}
                     >
                         {record?.status}
@@ -259,7 +258,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                         },
                         components: {
                             Table: {
-                                headerBg: '#F5E9DF',
+                                headerBg: '#2E4F3E26',
                                 headerColor: '#2E4F3E',
                                 colorBgContainer: '#FAF5E8',
                             },

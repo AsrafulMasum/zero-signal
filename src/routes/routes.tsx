@@ -18,6 +18,7 @@ import AdminProfile from '../pages/dashboard/admin-profile';
 import ChangePassword from '../pages/dashboard/change-password';
 import LockerManagement from '../pages/dashboard/locker-management';
 import ManageAdmin from '../pages/dashboard/manage-admin';
+import Category from '../pages/dashboard/category';
 
 const router = createBrowserRouter([
     {
@@ -26,10 +27,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             { path: '', element: <Dashboard /> },
+            { path: 'users', element: <Users /> },
+            { path: 'categories', element: <Category /> },
             { path: 'payments', element: <Orders /> },
             { path: 'locker-management', element: <LockerManagement /> },
             { path: 'manage-admin', element: <ManageAdmin /> },
-            { path: 'users', element: <Users /> },
             { path: 'subscriptions', element: <Subscription /> },
             { path: 'profile', element: <Profile /> },
             { path: 'adminProfile', element: <AdminProfile /> },

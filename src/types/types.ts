@@ -163,10 +163,10 @@ export interface ChefsTypes {
 
 export interface CategoryTypes {
     key: string;
-    categoryName: string;
-    totalDishes: number;
-    city: string;
-    deliveryStatus: 'active' | 'inactive';
+    categoryName?: string;
+    categoryImage?: string;
+    subCategoryName?: string;
+    status: 'active' | 'inactive';
 }
 
 export interface ReviewTypes {
