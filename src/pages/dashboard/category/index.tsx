@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ConfigProvider, Table, Tabs, message } from 'antd';
 import type { ColumnType } from 'antd/es/table';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
@@ -7,97 +7,17 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { FiEdit } from 'react-icons/fi';
 import AddEditCategoryModal from '../../../components/modals/AddEditCategoryModal';
 import DeleteModal from '../../../components/modals/DeleteModal';
+import { useGetCategoriesQuery, useGetSubCategoriesQuery } from '../../../redux/apiSlices/categorySlice';
 
-const categoryData: CategoryTypes[] = [
-    {
-        key: '1',
-        categoryName: 'Mountains',
-        categoryImage: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=200&q=80',
-        status: 'active',
-    },
-    {
-        key: '2',
-        categoryName: 'Forest',
-        categoryImage: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=200&q=80',
-        status: 'active',
-    },
-    {
-        key: '3',
-        categoryName: 'Beach',
-        categoryImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80',
-        status: 'inactive',
-    },
-    {
-        key: '4',
-        categoryName: 'Waterfall',
-        categoryImage: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=200&q=80',
-        status: 'active',
-    },
-    {
-        key: '5',
-        categoryName: 'Desert',
-        categoryImage: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=200&q=80',
-        status: 'inactive',
-    },
-    {
-        key: '6',
-        categoryName: 'Lake',
-        categoryImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&q=80',
-        status: 'active',
-    },
-];
+export default function Category() {
+    const { data } = useGetCategoriesQuery({});
+    const categoryData = data?.data;
 
-const subCategoryData: CategoryTypes[] = [
-    {
-        key: '1',
-        subCategoryName: 'Snowy Peaks',
-        status: 'active',
-    },
-    {
-        key: '2',
-        subCategoryName: 'Rocky Hills',
-        status: 'active',
-    },
-    {
-        key: '3',
-        subCategoryName: 'Pine Forest',
-        status: 'active',
-    },
-    {
-        key: '4',
-        subCategoryName: 'Rainforest',
-        status: 'inactive',
-    },
-    {
-        key: '5',
-        subCategoryName: 'Golden Beach',
-        status: 'active',
-    },
-    {
-        key: '6',
-        subCategoryName: 'Coral Shore',
-        status: 'inactive',
-    },
-    {
-        key: '7',
-        subCategoryName: 'Freshwater Lake',
-        status: 'active',
-    },
-    {
-        key: '8',
-        subCategoryName: 'Desert Dunes',
-        status: 'inactive',
-    },
-];
+    const { data: subCategoryRes } = useGetSubCategoriesQuery({});
+    const subCategoryData = subCategoryRes?.data;
 
-const statusColorMap = {
-    active: { color: '#52C41A', bg: '#2E4F3E40' },
-    inactive: { color: '#FF4D4F', bg: '#FFCCCC' },
-};
-
-export default function Category({ dashboard }: { dashboard?: boolean }) {
     const [activeTab, setActiveTab] = useState<'category' | 'subcategory'>('category');
-    const [categoryList, setCategoryList] = useState<CategoryTypes[]>(categoryData);
+    const [categoryList, setCategoryList] = useState<CategoryTypes[]>();
     const [subCategoryList, setSubCategoryList] = useState<CategoryTypes[]>(subCategoryData);
 
     // modal states
@@ -106,34 +26,19 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
     const [editingItem, setEditingItem] = useState<CategoryTypes | null>(null);
     const [deletingKey, setDeletingKey] = useState<string | null>(null);
 
-    const handleAddEditSubmit = (values: Partial<CategoryTypes>) => {
-        if (editingItem) {
-            const updated = (activeTab === 'category' ? categoryList : subCategoryList).map((item) =>
-                item.key === editingItem.key ? { ...item, ...values } : item,
-            );
-            activeTab === 'category' ? setCategoryList(updated) : setSubCategoryList(updated);
-            message.success('Updated successfully!');
-        } else {
-            const newItem: CategoryTypes = {
-                key: Date.now().toString(),
-                categoryName: '',
-                status: 'active',
-                ...values,
-            };
-            activeTab === 'category'
-                ? setCategoryList([...categoryList, newItem])
-                : setSubCategoryList([...subCategoryList, newItem]);
-            message.success('Added successfully!');
+    useEffect(() => {
+        if (categoryData) {
+            setCategoryList(categoryData);
         }
-        setIsAddEditModalOpen(false);
-        setEditingItem(null);
-    };
+        if (subCategoryData) {
+            setSubCategoryList(subCategoryData);
+        }
+    }, [categoryData]);
 
     const handleDeleteConfirm = () => {
-        const updated = (activeTab === 'category' ? categoryList : subCategoryList).filter(
-            (item) => item.key !== deletingKey,
-        );
-        activeTab === 'category' ? setCategoryList(updated) : setSubCategoryList(updated);
+        const subCategoryListUpdated = subCategoryList?.filter((item) => item.key !== deletingKey) || [];
+        const categoryListUpdated = categoryList?.filter((item) => item.key !== deletingKey) || [];
+        activeTab === 'category' ? setCategoryList(categoryListUpdated) : setSubCategoryList(subCategoryListUpdated);
         setIsDeleteModalOpen(false);
         setDeletingKey(null);
         message.success('Deleted successfully!');
@@ -145,38 +50,39 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
             dataIndex: 'key',
             key: 'key',
             responsive: ['sm'] as any,
+            render: (_, __, index) => <span>{index + 1}</span>,
         },
         {
             title: 'Category Name',
-            dataIndex: 'categoryName',
-            key: 'categoryName',
+            dataIndex: 'name',
+            key: 'name',
         },
-        {
-            title: 'Category Image',
-            dataIndex: 'categoryImage',
-            key: 'categoryImage',
-            responsive: ['sm'] as any,
-            render: (categoryImage: string) => (
-                <img src={categoryImage} alt="category" className="w-8 h-8 rounded-lg" />
-            ),
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: CategoryTypes['status']) => {
-                const currentStyle =
-                    status in statusColorMap
-                        ? statusColorMap[status as keyof typeof statusColorMap]
-                        : { color: '#595959', bg: '#FAFAFA' };
+        // {
+        //     title: 'Category Image',
+        //     dataIndex: 'categoryImage',
+        //     key: 'categoryImage',
+        //     responsive: ['sm'] as any,
+        //     render: (categoryImage: string) => (
+        //         <img src={categoryImage} alt="category" className="w-8 h-8 rounded-lg" />
+        //     ),
+        // },
+        // {
+        //     title: 'Status',
+        //     dataIndex: 'status',
+        //     key: 'status',
+        //     render: (status: CategoryTypes['status']) => {
+        //         const currentStyle =
+        //             status in statusColorMap
+        //                 ? statusColorMap[status as keyof typeof statusColorMap]
+        //                 : { color: '#595959', bg: '#FAFAFA' };
 
-                return (
-                    <p className="capitalize px-1 py-0.5 rounded-lg max-w-40" style={{ color: currentStyle.color }}>
-                        {status}
-                    </p>
-                );
-            },
-        },
+        //         return (
+        //             <p className="capitalize px-1 py-0.5 rounded-lg max-w-40" style={{ color: currentStyle.color }}>
+        //                 {status}
+        //             </p>
+        //         );
+        //     },
+        // },
         {
             title: 'Action',
             key: 'action',
@@ -210,32 +116,30 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
             dataIndex: 'key',
             key: 'key',
             responsive: ['sm'] as any,
+            render: (_, __, index) => <span>{index + 1}</span>,
         },
         {
             title: 'Sub-Category Name',
-            dataIndex: 'subCategoryName',
-            key: 'subCategoryName',
+            dataIndex: 'name',
+            key: 'name',
         },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: CategoryTypes['status']) => {
-                const currentStyle =
-                    status in statusColorMap
-                        ? statusColorMap[status as keyof typeof statusColorMap]
-                        : { color: '#595959', bg: '#FAFAFA' };
+        // {
+        //     title: 'Status',
+        //     dataIndex: 'status',
+        //     key: 'status',
+        //     render: (status: CategoryTypes['status']) => {
+        //         const currentStyle =
+        //             status in statusColorMap
+        //                 ? statusColorMap[status as keyof typeof statusColorMap]
+        //                 : { color: '#595959', bg: '#FAFAFA' };
 
-                return (
-                    <p
-                        className="capitalize px-1 py-0.5 rounded-lg max-w-40"
-                        style={{ color: currentStyle.color }}
-                    >
-                        {status}
-                    </p>
-                );
-            },
-        },
+        //         return (
+        //             <p className="capitalize px-1 py-0.5 rounded-lg max-w-40" style={{ color: currentStyle.color }}>
+        //                 {status}
+        //             </p>
+        //         );
+        //     },
+        // },
         {
             title: 'Action',
             key: 'action',
@@ -304,7 +208,11 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
                                 <Table
                                     columns={columns}
                                     dataSource={categoryList}
-                                    pagination={dashboard ? false : { pageSize: 9, total: categoryList.length }}
+                                    rowKey={'_id'}
+                                    pagination={{
+                                        pageSize: 9,
+                                        total: categoryList?.length || 0,
+                                    }}
                                     className="custom-table"
                                 />
                             ),
@@ -316,7 +224,11 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
                                 <Table
                                     columns={subColumns}
                                     dataSource={subCategoryList}
-                                    pagination={dashboard ? false : { pageSize: 9, total: subCategoryList.length }}
+                                    rowKey={'_id'}
+                                    pagination={{
+                                        pageSize: 9,
+                                        total: subCategoryList?.length || 0,
+                                    }}
                                     className="custom-table"
                                 />
                             ),
@@ -329,7 +241,6 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
             <AddEditCategoryModal
                 open={isAddEditModalOpen}
                 onCancel={() => setIsAddEditModalOpen(false)}
-                onSubmit={handleAddEditSubmit}
                 editingItem={editingItem}
                 setEditingItem={setEditingItem as any}
                 activeTab={activeTab}

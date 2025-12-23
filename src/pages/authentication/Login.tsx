@@ -25,7 +25,7 @@ const Login = () => {
             }).unwrap();
 
             if (res?.success) {
-                localStorage.setItem('token', JSON.stringify(res?.data?.accessToken));
+                localStorage.setItem('token', JSON.stringify(res?.data));
                 toast.success('Login successful!');
                 if (values?.remember) {
                     localStorage.setItem(
