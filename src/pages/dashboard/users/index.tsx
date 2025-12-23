@@ -8,6 +8,7 @@ import { StatCard } from '../dashboard';
 import { GiKeyring, GiMoneyStack } from 'react-icons/gi';
 import { PiUserCircleLight, PiUsersThree } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
+import { CiLock, CiUnlock } from 'react-icons/ci';
 
 const userData: User[] = [
     { key: '1', serialId: 'S-001', userName: 'John Doe', userType: 'Admin', address: 'Locker A1', status: 'Active' },
@@ -155,32 +156,29 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
 
     const columns = [
         {
-            title: 'Serial ID',
-            dataIndex: 'serialId',
-            key: 'serialId',
+            title: 'Serial No.',
+            dataIndex: 'serialNo',
+            key: 'serialNo',
             responsive: ['sm'] as any,
-        },
-        {
-            title: 'Key Id',
-            dataIndex: 'key',
-            key: 'key',
+            render: (_, __, index) => <span>{index + 1}</span>,
         },
         {
             title: 'User Name',
             dataIndex: 'userName',
             key: 'userName',
+            responsive: ['sm'] as any,
         },
         {
-            title: 'User Type',
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+            responsive: ['sm'] as any,
+        },
+        {
+            title: 'User Role',
             dataIndex: 'userType',
             key: 'userType',
             responsive: ['md'] as any,
-        },
-        {
-            title: 'Locker',
-            dataIndex: 'address',
-            key: 'address',
-            responsive: ['lg'] as any,
         },
         {
             title: 'Status',
@@ -201,6 +199,35 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                     </p>
                 );
             },
+        },
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            key: 'action',
+            render: (_, record) => (
+                <div>
+                    <button
+                        className="flex justify-center items-center rounded-md"
+                        onClick={() => {
+                            setUserToBlock(record);
+                            setIsBlockModalVisible(true);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            border: 'none',
+                            outline: 'none',
+                            width: '40px',
+                            height: '32px',
+                        }}
+                    >
+                        {record?.status === 'Active' ? (
+                            <CiUnlock size={26} className="text-[#52C41A]" />
+                        ) : (
+                            <CiLock size={26} className="text-[#FF0000]" />
+                        )}
+                    </button>
+                </div>
+            ),
         },
     ];
 
