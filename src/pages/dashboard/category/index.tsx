@@ -8,38 +8,6 @@ import { FiEdit } from 'react-icons/fi';
 import AddEditCategoryModal from '../../../components/modals/AddEditCategoryModal';
 import DeleteModal from '../../../components/modals/DeleteModal';
 
-const canadianCities = [
-    'Toronto',
-    'Vancouver',
-    'Montreal',
-    'Calgary',
-    'Edmonton',
-    'Ottawa',
-    'Winnipeg',
-    'Quebec City',
-    'Hamilton',
-    'Kitchener',
-    'London',
-    'Victoria',
-    'Halifax',
-    'Oshawa',
-    'Windsor',
-    'Saskatoon',
-    'Regina',
-    'St. Johns',
-    'Barrie',
-    'Kelowna',
-    'Abbotsford',
-    'Sherbrooke',
-    'Guelph',
-    'Kingston',
-    'Forfield',
-    'Noperville',
-    'Orange',
-    'Toledo',
-    'Austin',
-];
-
 const categoryData: CategoryTypes[] = [
     {
         key: '1',
@@ -363,8 +331,8 @@ export default function Category({ dashboard }: { dashboard?: boolean }) {
                 onCancel={() => setIsAddEditModalOpen(false)}
                 onSubmit={handleAddEditSubmit}
                 editingItem={editingItem}
+                setEditingItem={setEditingItem as any}
                 activeTab={activeTab}
-                canadianCities={canadianCities}
             />
 
             <DeleteModal

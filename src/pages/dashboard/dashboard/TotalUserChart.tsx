@@ -4,20 +4,20 @@ import { Card, ConfigProvider, DatePicker } from 'antd';
 import { earningsData } from '../../../demo-data/home-data';
 import { FaChevronDown } from 'react-icons/fa';
 
-const CustomLegend = () => {
-    return (
-        <div className="flex gap-2 2xl:gap-4 text-sm text-[#757575] pr-4">
-            <div className="flex items-center gap-1 whitespace-nowrap">
-                <div className="w-3 h-3 bg-[#484949] rounded-full" />
-                User
-            </div>
-            <div className="flex items-center gap-1 whitespace-nowrap">
-                <div className="w-3 h-3 bg-[#7B61FF] rounded-full" />
-                Subscribed User
-            </div>
-        </div>
-    );
-};
+// const CustomLegend = () => {
+//     return (
+//         <div className="flex gap-2 2xl:gap-4 text-sm text-[#757575] pr-4">
+//             <div className="flex items-center gap-1 whitespace-nowrap">
+//                 <div className="w-3 h-3 bg-[#484949] rounded-full" />
+//                 User
+//             </div>
+//             <div className="flex items-center gap-1 whitespace-nowrap">
+//                 <div className="w-3 h-3 bg-[#7B61FF] rounded-full" />
+//                 Subscribed User
+//             </div>
+//         </div>
+//     );
+// };
 
 const TotalUserChart = () => {
     const [selectedYear, setSelectedYear] = useState('2025');
@@ -33,7 +33,7 @@ const TotalUserChart = () => {
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-semibold">Total User Statistics</h2>
                     <div className="flex gap-2">
-                        <CustomLegend />
+                        {/* <CustomLegend /> */}
 
                         {/* Year Dropdown */}
                         <ConfigProvider
@@ -61,7 +61,7 @@ const TotalUserChart = () => {
                     </div>
                 </div>
 
-                <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={235}>
                     <BarChart data={earningsData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="month" stroke="#999" style={{ fontSize: '12px' }} />
@@ -76,8 +76,8 @@ const TotalUserChart = () => {
                             }}
                             labelStyle={{ color: '#c61f1f' }}
                         />
-                        <Bar dataKey="value" name="Organizers" fill="#484949" radius={[6, 6, 0, 0]} barSize={10} />
-                        <Bar dataKey="value" name="Organizers" fill="#7B61FF" radius={[6, 6, 0, 0]} barSize={10} />
+                        <Bar dataKey="value" name="Organizers" fill="#484949" radius={[15, 15, 0, 0]} barSize={25} />
+                        {/* <Bar dataKey="value" name="Organizers" fill="#7B61FF" radius={[6, 6, 0, 0]} barSize={10} /> */}
                     </BarChart>
                 </ResponsiveContainer>
             </Card>

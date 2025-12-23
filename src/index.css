@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 :root {
-    --color-primary: #2E4F3E;
+    --color-primary: #2e4f3e;
 }
 
 * {
@@ -17,7 +17,7 @@
 }
 
 body {
-    background-color: #FFF4E9;
+    background-color: #fff4e9;
 }
 
 ::-webkit-scrollbar {
@@ -30,7 +30,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #2E4F3E;
+    background: #2e4f3e;
     border-radius: 10px;
 }
 
@@ -48,7 +48,7 @@ body {
 
 /* sidebar */
 .ant-menu-submenu-selected > .ant-menu-submenu-title {
-    color: #2E4F3E !important;
+    color: #2e4f3e !important;
 }
 
 .ant-select-selector {
@@ -71,9 +71,48 @@ body {
 }
 
 .ant-table-wrapper .ant-table tbody > tr > td {
-    background: #FFF4E9 !important;
+    background: #fff4e9 !important;
 }
 
 .ant-table-wrapper .ant-table thead > tr > th {
-    background: #2E4F3E26 !important;
+    background: #2e4f3e26 !important;
+}
+
+.ant-pagination .ant-pagination-item {
+    border-radius: 16px !important;
+    background: #fff4e9 !important;
+    border: 1px solid #2e4f3e !important;
+    color: #2e4f3e !important;
+}
+
+.ant-pagination .ant-pagination-item-active {
+    background: #2e4f3e !important;
+    color: #fff !important;
+    border-radius: 16px !important;
+}
+
+.ant-pagination .ant-pagination-item:hover {
+    background: #2e4f3e !important;
+    color: #fff !important;
+    border-radius: 16px !important;
+}
+
+.ant-pagination .ant-pagination-item-active:hover {
+    background: #2e4f3e !important;
+    color: #fff !important;
+    border-radius: 16px !important;
+}
+
+/* Hover state for normal items */
+.ant-pagination .ant-pagination-item:hover a {
+    color: #fff !important;
+}
+
+/* Active item hover */
+.ant-pagination .ant-pagination-item-active:hover a {
+    color: #fff !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+    color: #fff !important;
 }
