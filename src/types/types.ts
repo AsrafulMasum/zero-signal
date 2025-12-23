@@ -162,7 +162,7 @@ export interface ChefsTypes {
 }
 
 export interface CategoryTypes {
-    key: string;
+    _id: string;
     categoryName?: string;
     categoryImage?: string;
     subCategoryName?: string;

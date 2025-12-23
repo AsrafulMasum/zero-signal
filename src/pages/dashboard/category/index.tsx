@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, ConfigProvider, Table, Tabs, message } from 'antd';
+import { Button, ConfigProvider, Table, Tabs } from 'antd';
 import type { ColumnType } from 'antd/es/table';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
 import { CategoryTypes } from '../../../types/types';
@@ -7,14 +7,23 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { FiEdit } from 'react-icons/fi';
 import AddEditCategoryModal from '../../../components/modals/AddEditCategoryModal';
 import DeleteModal from '../../../components/modals/DeleteModal';
-import { useGetCategoriesQuery, useGetSubCategoriesQuery } from '../../../redux/apiSlices/categorySlice';
+import {
+    useDeleteCategoryMutation,
+    useDeleteSubCategoryMutation,
+    useGetCategoriesQuery,
+    useGetSubCategoriesQuery,
+} from '../../../redux/apiSlices/categorySlice';
+import toast from 'react-hot-toast';
 
 export default function Category() {
-    const { data } = useGetCategoriesQuery({});
+    const { data, refetch } = useGetCategoriesQuery({});
     const categoryData = data?.data;
 
-    const { data: subCategoryRes } = useGetSubCategoriesQuery({});
+    const { data: subCategoryRes, refetch: subCategoryRefetch } = useGetSubCategoriesQuery({});
     const subCategoryData = subCategoryRes?.data;
+
+    const [deleteCategory] = useDeleteCategoryMutation();
+    const [deleteSubCategory] = useDeleteSubCategoryMutation();
 
     const [activeTab, setActiveTab] = useState<'category' | 'subcategory'>('category');
     const [categoryList, setCategoryList] = useState<CategoryTypes[]>();
@@ -24,7 +33,7 @@ export default function Category() {
     const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<CategoryTypes | null>(null);
-    const [deletingKey, setDeletingKey] = useState<string | null>(null);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     useEffect(() => {
         if (categoryData) {
@@ -33,15 +42,27 @@ export default function Category() {
         if (subCategoryData) {
             setSubCategoryList(subCategoryData);
         }
-    }, [categoryData]);
+    }, [categoryData, subCategoryData]);
 
-    const handleDeleteConfirm = () => {
-        const subCategoryListUpdated = subCategoryList?.filter((item) => item.key !== deletingKey) || [];
-        const categoryListUpdated = categoryList?.filter((item) => item.key !== deletingKey) || [];
-        activeTab === 'category' ? setCategoryList(categoryListUpdated) : setSubCategoryList(subCategoryListUpdated);
-        setIsDeleteModalOpen(false);
-        setDeletingKey(null);
-        message.success('Deleted successfully!');
+    const handleDeleteConfirm = async () => {
+        if (!deletingId) return;
+
+        try {
+            if (activeTab === 'category') {
+                await deleteCategory(deletingId).unwrap();
+                toast.success('Category deleted successfully');
+                refetch();
+            } else {
+                await deleteSubCategory(deletingId).unwrap();
+                toast.success('Sub-category deleted successfully');
+                subCategoryRefetch();
+            }
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Failed to delete. Please try again.');
+        } finally {
+            setIsDeleteModalOpen(false);
+            setDeletingId(null);
+        }
     };
 
     const columns: ColumnType<CategoryTypes>[] = [
@@ -57,32 +78,6 @@ export default function Category() {
             dataIndex: 'name',
             key: 'name',
         },
-        // {
-        //     title: 'Category Image',
-        //     dataIndex: 'categoryImage',
-        //     key: 'categoryImage',
-        //     responsive: ['sm'] as any,
-        //     render: (categoryImage: string) => (
-        //         <img src={categoryImage} alt="category" className="w-8 h-8 rounded-lg" />
-        //     ),
-        // },
-        // {
-        //     title: 'Status',
-        //     dataIndex: 'status',
-        //     key: 'status',
-        //     render: (status: CategoryTypes['status']) => {
-        //         const currentStyle =
-        //             status in statusColorMap
-        //                 ? statusColorMap[status as keyof typeof statusColorMap]
-        //                 : { color: '#595959', bg: '#FAFAFA' };
-
-        //         return (
-        //             <p className="capitalize px-1 py-0.5 rounded-lg max-w-40" style={{ color: currentStyle.color }}>
-        //                 {status}
-        //             </p>
-        //         );
-        //     },
-        // },
         {
             title: 'Action',
             key: 'action',
@@ -101,7 +96,7 @@ export default function Category() {
                         icon={<MdOutlineDeleteOutline size={24} />}
                         className="text-red-500"
                         onClick={() => {
-                            setDeletingKey(record.key);
+                            setDeletingId(record._id);
                             setIsDeleteModalOpen(true);
                         }}
                     />
@@ -123,23 +118,6 @@ export default function Category() {
             dataIndex: 'name',
             key: 'name',
         },
-        // {
-        //     title: 'Status',
-        //     dataIndex: 'status',
-        //     key: 'status',
-        //     render: (status: CategoryTypes['status']) => {
-        //         const currentStyle =
-        //             status in statusColorMap
-        //                 ? statusColorMap[status as keyof typeof statusColorMap]
-        //                 : { color: '#595959', bg: '#FAFAFA' };
-
-        //         return (
-        //             <p className="capitalize px-1 py-0.5 rounded-lg max-w-40" style={{ color: currentStyle.color }}>
-        //                 {status}
-        //             </p>
-        //         );
-        //     },
-        // },
         {
             title: 'Action',
             key: 'action',
@@ -158,7 +136,7 @@ export default function Category() {
                         icon={<MdOutlineDeleteOutline size={24} />}
                         className="text-red-500"
                         onClick={() => {
-                            setDeletingKey(record.key);
+                            setDeletingId(record._id);
                             setIsDeleteModalOpen(true);
                         }}
                     />
@@ -244,6 +222,9 @@ export default function Category() {
                 editingItem={editingItem}
                 setEditingItem={setEditingItem as any}
                 activeTab={activeTab}
+                subCategoryRefetch={subCategoryRefetch}
+                refetch={refetch}
+                categoryList={categoryList}
             />
 
             <DeleteModal

@@ -84,6 +84,7 @@ export default function Profile() {
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
     const [form] = Form.useForm();
+    const [passwordForm] = Form.useForm();
 
     useEffect(() => {
         if (profile) {
@@ -134,7 +135,8 @@ export default function Profile() {
         try {
             const res = await changePassword(payload).unwrap();
             if (res?.success) {
-                toast.success(res?.message);
+                toast.success(res?.message || 'Password updated successfully.');
+                passwordForm.resetFields(['current', 'new', 'confirm']);
             }
         } catch (error: any) {
             console.log(error);
@@ -229,7 +231,7 @@ export default function Profile() {
             key: '2',
             label: 'Change Password',
             children: (
-                <Form layout="vertical" onFinish={handleChangePassword} requiredMark={false}>
+                <Form layout="vertical" form={passwordForm} onFinish={handleChangePassword} requiredMark={false}>
                     {renderFields(passwordFormFields, true)}
                     <Button
                         htmlType="submit"
