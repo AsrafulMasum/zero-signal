@@ -122,10 +122,11 @@ export interface WaitingListTypes {
 export interface User {
     key: string;
     serialId?: string;
-    userName?: string;
+    name?: string;
     email?: string;
     city?: string;
     country?: string;
+    image?: string;
     createdAt?: string;
     address?: string;
     userType?: String;

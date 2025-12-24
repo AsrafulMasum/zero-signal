@@ -1,32 +1,24 @@
-import { api } from "../api/baseApi";
+import { api } from '../api/baseApi';
 
 const userSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         getUsers: builder.query({
-            query: ({query}:{query?:string}) => {
-               
-                
+            query: ({ page, limit }: { page?: number, limit?: number }) => {
                 return {
-                    url: "/user?"+query,
-                };
-            },
-        }),
-        changeStatusUser: builder.mutation({
-            query: ({id}:{id:string}) => {
-                return {
-                    method: "PATCH",
-                    url: `/user/${id}`,
+                    url: `/user?page=${page}&limit=${limit}`,
+                    method: 'GET',
                 };
             },
         }),
 
-        getHosts: builder.query({
-            query: ({query}:{query?:string}) => {
+        changeStatusUser: builder.mutation({
+            query: ({ id }: { id: string }) => {
                 return {
-                    url: "/user/host?"+query,
+                    method: 'PATCH',
+                    url: `/user/${id}`,
                 };
             },
         }),
     }),
 });
-export const {useGetUsersQuery, useChangeStatusUserMutation,useGetHostsQuery} = userSlice;
+export const { useGetUsersQuery, useChangeStatusUserMutation } = userSlice;
