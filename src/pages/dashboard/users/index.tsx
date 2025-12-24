@@ -213,6 +213,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                 >
                     <Table
                         columns={columns}
+                        rowKey="_id"
                         dataSource={dashboard ? filteredUser : userData}
                         pagination={
                             dashboard

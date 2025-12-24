@@ -19,6 +19,7 @@ import LockerManagement from '../pages/dashboard/locker-management';
 import ManageAdmin from '../pages/dashboard/manage-admin';
 import Category from '../pages/dashboard/category';
 import Spots from '../pages/dashboard/orders';
+import Reports from '../pages/dashboard/reports';
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
             { path: 'users', element: <Users /> },
             { path: 'categories', element: <Category /> },
             { path: 'spots', element: <Spots /> },
+            { path: 'reports', element: <Reports /> },
             { path: 'locker-management', element: <LockerManagement /> },
             { path: 'manage-admin', element: <ManageAdmin /> },
             { path: 'subscriptions', element: <Subscription /> },

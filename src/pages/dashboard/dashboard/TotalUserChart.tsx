@@ -1,26 +1,14 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, ConfigProvider, DatePicker } from 'antd';
-import { earningsData } from '../../../demo-data/home-data';
 import { FaChevronDown } from 'react-icons/fa';
-
-// const CustomLegend = () => {
-//     return (
-//         <div className="flex gap-2 2xl:gap-4 text-sm text-[#757575] pr-4">
-//             <div className="flex items-center gap-1 whitespace-nowrap">
-//                 <div className="w-3 h-3 bg-[#484949] rounded-full" />
-//                 User
-//             </div>
-//             <div className="flex items-center gap-1 whitespace-nowrap">
-//                 <div className="w-3 h-3 bg-[#7B61FF] rounded-full" />
-//                 Subscribed User
-//             </div>
-//         </div>
-//     );
-// };
+import { useGetUserAnalyticsQuery } from '../../../redux/apiSlices/analyticsSlice';
 
 const TotalUserChart = () => {
-    const [selectedYear, setSelectedYear] = useState('2025');
+    const [selectedYear, setSelectedYear] = useState('');
+
+    const { data: users } = useGetUserAnalyticsQuery({ year: selectedYear });
+    const usersAnalytics = users?.data;
 
     return (
         <div>
@@ -54,7 +42,9 @@ const TotalUserChart = () => {
                                 picker="year"
                                 suffixIcon={<FaChevronDown className="text-gray-500 text-sm" />}
                                 onChange={(_, dateString) => {
-                                    setSelectedYear(Array.isArray(dateString) ? dateString.join('-') : (dateString || ''));
+                                    setSelectedYear(
+                                        Array.isArray(dateString) ? dateString.join('-') : dateString || '',
+                                    );
                                 }}
                             />
                         </ConfigProvider>
@@ -62,7 +52,7 @@ const TotalUserChart = () => {
                 </div>
 
                 <ResponsiveContainer width="100%" height={235}>
-                    <BarChart data={earningsData}>
+                    <BarChart data={usersAnalytics}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="month" stroke="#999" style={{ fontSize: '12px' }} />
                         <YAxis stroke="#999" style={{ fontSize: '12px' }} tickFormatter={(value) => `${value}`} />
@@ -76,7 +66,7 @@ const TotalUserChart = () => {
                             }}
                             labelStyle={{ color: '#c61f1f' }}
                         />
-                        <Bar dataKey="value" name="Organizers" fill="#484949" radius={[15, 15, 0, 0]} barSize={25} />
+                        <Bar dataKey="count" name="Users" fill="#484949" radius={[15, 15, 0, 0]} barSize={25} />
                         {/* <Bar dataKey="value" name="Organizers" fill="#7B61FF" radius={[6, 6, 0, 0]} barSize={10} /> */}
                     </BarChart>
                 </ResponsiveContainer>

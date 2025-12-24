@@ -7,6 +7,7 @@ import { LucideUserRound } from 'lucide-react';
 import { CgLock } from 'react-icons/cg';
 import { MdOutlineCategory } from 'react-icons/md';
 import { TfiLocationPin } from 'react-icons/tfi';
+import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -45,6 +46,12 @@ const sidebarItems: TSidebarItem[] = [
     //     path: 'drivers',
     //     icon: <LuUserCheck size={24} />,
     // },
+    {
+        key: 'reports',
+        label: 'Reports',
+        path: 'reports',
+        icon: <HiOutlineClipboardDocumentList size={24} />,
+    },
     {
         key: 'spots',
         label: 'Spots',
