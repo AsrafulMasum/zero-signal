@@ -1,0 +1,14 @@
+import { api } from '../api/baseApi';
+
+const spotsSlice = api.injectEndpoints({
+    endpoints: (builder) => ({
+        getSpots: builder.query({
+            query: ({ page, limit }: { page?: number; limit?: number }) => ({
+                url: `/spot?page=${page}&limit=${limit}`,
+                method: 'GET',
+            }),
+        }),
+    }),
+});
+
+export const { useGetSpotsQuery } = spotsSlice;

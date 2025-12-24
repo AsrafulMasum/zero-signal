@@ -11,7 +11,6 @@ import TermsAndCondition from '../pages/dashboard/terms-and-condition';
 import Profile from '../pages/dashboard/profile';
 import Notification from '../pages/dashboard/notification';
 import PrivacyPolicy from '../pages/dashboard/privacy-policy';
-import Orders from '../pages/dashboard/orders';
 import AboutUs from '../pages/dashboard/about-us';
 import Subscription from '../pages/dashboard/package';
 import AdminProfile from '../pages/dashboard/admin-profile';
@@ -19,6 +18,7 @@ import ChangePassword from '../pages/dashboard/change-password';
 import LockerManagement from '../pages/dashboard/locker-management';
 import ManageAdmin from '../pages/dashboard/manage-admin';
 import Category from '../pages/dashboard/category';
+import Spots from '../pages/dashboard/orders';
 
 const router = createBrowserRouter([
     {
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
             { path: '', element: <Dashboard /> },
             { path: 'users', element: <Users /> },
             { path: 'categories', element: <Category /> },
-            { path: 'payments', element: <Orders /> },
+            { path: 'spots', element: <Spots /> },
             { path: 'locker-management', element: <LockerManagement /> },
             { path: 'manage-admin', element: <ManageAdmin /> },
             { path: 'subscriptions', element: <Subscription /> },

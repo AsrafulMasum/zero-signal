@@ -2,12 +2,11 @@ import { TSidebarItem } from './generateSidebarItems';
 import { LuClipboardList, LuLayoutDashboard } from 'react-icons/lu';
 import { TbBook } from 'react-icons/tb';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { GiMoneyStack } from 'react-icons/gi';
 import { PiUserGear, PiUsers } from 'react-icons/pi';
-import { LiaCcMastercard } from 'react-icons/lia';
 import { LucideUserRound } from 'lucide-react';
 import { CgLock } from 'react-icons/cg';
 import { MdOutlineCategory } from 'react-icons/md';
+import { TfiLocationPin } from 'react-icons/tfi';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -34,12 +33,12 @@ const sidebarItems: TSidebarItem[] = [
         path: 'categories',
         icon: <MdOutlineCategory size={24} />,
     },
-    {
-        key: 'subscriptions',
-        label: 'Subscriptions',
-        path: 'subscriptions',
-        icon: <LiaCcMastercard size={24} />,
-    },
+    // {
+    //     key: 'subscriptions',
+    //     label: 'Subscriptions',
+    //     path: 'subscriptions',
+    //     icon: <LiaCcMastercard size={24} />,
+    // },
     // {
     //     key: 'drivers',
     //     label: 'Subscribers',
@@ -47,10 +46,10 @@ const sidebarItems: TSidebarItem[] = [
     //     icon: <LuUserCheck size={24} />,
     // },
     {
-        key: 'payments',
-        label: 'Payments',
-        path: 'payments',
-        icon: <GiMoneyStack size={24} />,
+        key: 'spots',
+        label: 'Spots',
+        path: 'spots',
+        icon: <TfiLocationPin size={24} />,
     },
     {
         key: 'manage-admin',

@@ -12,7 +12,6 @@ import { SlEye } from 'react-icons/sl';
 import toast from 'react-hot-toast';
 
 const statusColorMap = {
-    // Pending: { color: '#D48806', bg: '#F7F1CC' },
     delete: { color: '#FF4D4F', bg: '#FFD8D7' },
     active: { color: '#52C41A', bg: '#D9F2CD' },
 };
@@ -220,8 +219,9 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                                 ? false
                                 : {
                                       pageSize: pageSize,
-                                      total: data?.pagination ? data.pagination?.totalPage : 0,
+                                      total: data?.pagination ? data.pagination?.total : 0,
                                       onChange: (page) => setPage(page),
+                                      showSizeChanger: false,
                                   }
                         }
                         className="custom-table"

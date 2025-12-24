@@ -94,7 +94,11 @@ export interface INotification {
     receiver: string;
 }
 
-export interface Order {
+export interface Spot {
+    user: {
+        name: string;
+    };
+    images: string[];
     email: string;
     key: string;
     orderNumber: string;
