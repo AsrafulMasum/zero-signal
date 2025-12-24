@@ -6,8 +6,10 @@ import HeaderTitle from '../../../components/shared/HeaderTitle';
 import { User } from '../../../types/types';
 import { Link } from 'react-router-dom';
 import { CiLock, CiUnlock } from 'react-icons/ci';
-import { useGetUsersQuery } from '../../../redux/apiSlices/userSlice';
+import { useChangeStatusUserMutation, useGetUsersQuery } from '../../../redux/apiSlices/userSlice';
 import { imageUrl } from '../../../redux/api/baseApi';
+import { SlEye } from 'react-icons/sl';
+import toast from 'react-hot-toast';
 
 const statusColorMap = {
     // Pending: { color: '#D48806', bg: '#F7F1CC' },
@@ -23,29 +25,27 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
     const [isBlockModalVisible, setIsBlockModalVisible] = useState<boolean>(false);
     const [userToBlock, setUserToBlock] = useState<User | null>(null);
 
-    const { data } = useGetUsersQuery({ page, limit: pageSize });
+    const { data, refetch } = useGetUsersQuery({ page, limit: pageSize });
     const userData = data?.data;
-
-    // const showUserDetails = (user: User) => {
-    //     setSelectedUser(user);
-    //     setIsModalVisible(true);
-    // };
-
     const filteredUser = userData?.slice(0, 3);
+
+    const [changeStatusUser] = useChangeStatusUserMutation();
 
     const handleModalClose = () => {
         setIsModalVisible(false);
         setSelectedUser(null);
     };
 
-    // const showBlockModal = (user: User) => {
-    //     setUserToBlock(user);
-    //     setIsBlockModalVisible(true);
-    // };
-
-    const handleBlockConfirm = () => {
-        // Handle block user logic here
-        console.log('Blocking user:', userToBlock);
+    const handleBlockConfirm = async () => {
+        if (!userToBlock?._id) return;
+        try {
+            const res = await changeStatusUser({ id: userToBlock._id }).unwrap();
+            toast.success(res?.message);
+            refetch();
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong. Please try again.');
+        }
         setIsBlockModalVisible(false);
         setUserToBlock(null);
     };
@@ -136,7 +136,23 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
             dataIndex: 'action',
             key: 'action',
             render: (_, record: User) => (
-                <div>
+                <div className="flex items-center">
+                    <button
+                        className="flex justify-center items-center rounded-md"
+                        onClick={() => {
+                            setSelectedUser(record);
+                            setIsModalVisible(true);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            border: 'none',
+                            outline: 'none',
+                            width: '40px',
+                            height: '32px',
+                        }}
+                    >
+                        <SlEye size={24} className="text-[#7b7b7b]" />
+                    </button>
                     <button
                         className="flex justify-center items-center rounded-md"
                         onClick={() => {
@@ -151,7 +167,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                             height: '32px',
                         }}
                     >
-                        {record?.status === 'Active' ? (
+                        {record?.status === 'active' ? (
                             <CiUnlock size={26} className="text-[#52C41A]" />
                         ) : (
                             <CiLock size={26} className="text-[#FF0000]" />
@@ -176,7 +192,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                         <Input
                             placeholder="Search"
                             className=""
-                            style={{ width: 280, height: 40 }}
+                            style={{ width: 280, height: 40, backgroundColor: '#F5E9DF' }}
                             prefix={<i className="bi bi-search"></i>}
                         />
                     )}
@@ -204,7 +220,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                                 ? false
                                 : {
                                       pageSize: pageSize,
-                                      total: userData ? userData.length : 0,
+                                      total: data?.pagination ? data.pagination?.totalPage : 0,
                                       onChange: (page) => setPage(page),
                                   }
                         }
@@ -223,7 +239,6 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                 isBlockModalVisible={isBlockModalVisible}
                 handleBlockCancel={handleBlockCancel}
                 handleBlockConfirm={handleBlockConfirm}
-                isUserBlocked={userToBlock?.status !== 'Active'}
             />
         </>
     );

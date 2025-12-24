@@ -3,13 +3,17 @@ import { Modal } from 'antd';
 export default function BlockModal({
     isBlockModalVisible,
     handleBlockCancel,
+    handleBlockConfirm,
 }: {
     isBlockModalVisible: boolean;
     handleBlockCancel: () => void;
     handleBlockConfirm: () => void;
-    isUserBlocked: boolean;
 }) {
-    const handleDelete = () => {};
+    const handleDelete = () => {
+        handleBlockConfirm();
+        handleBlockCancel();
+    };
+
     return (
         <Modal
             open={isBlockModalVisible}
@@ -25,11 +29,11 @@ export default function BlockModal({
                     Do you really want to delete these records? This process cannot be undone.
                 </p>
                 <div className="flex items-center justify-between">
-                    <button onClick={handleDelete} className="text-[#272728] bg-white px-6 py-2 rounded-md border">
+                    <button onClick={handleBlockCancel} className="text-[#272728] bg-white px-6 py-2 rounded-md border">
                         Cancel
                     </button>
                     <button onClick={handleDelete} className="bg-[#EA545526] text-[#EA5455] px-6 py-2 rounded-md">
-                        Delete
+                        Block this user
                     </button>
                 </div>
             </div>

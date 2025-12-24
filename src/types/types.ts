@@ -120,7 +120,7 @@ export interface WaitingListTypes {
 }
 
 export interface User {
-    key: string;
+    _id: string | undefined;
     serialId?: string;
     name?: string;
     email?: string;
