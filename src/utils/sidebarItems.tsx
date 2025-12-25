@@ -2,12 +2,14 @@ import { TSidebarItem } from './generateSidebarItems';
 import { LuClipboardList, LuLayoutDashboard } from 'react-icons/lu';
 import { TbBook } from 'react-icons/tb';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { PiUserGear, PiUsers } from 'react-icons/pi';
+import { PiUsers } from 'react-icons/pi';
 import { LucideUserRound } from 'lucide-react';
 import { CgLock } from 'react-icons/cg';
 import { MdOutlineCategory } from 'react-icons/md';
 import { TfiLocationPin } from 'react-icons/tfi';
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
+import { BiSupport } from 'react-icons/bi';
+import { GoQuestion } from 'react-icons/go';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -22,30 +24,12 @@ const sidebarItems: TSidebarItem[] = [
         path: 'users',
         icon: <PiUsers size={24} />,
     },
-    // {
-    //     key: 'locker-management',
-    //     label: 'Locker Management',
-    //     path: 'locker-management',
-    //     icon: <GiKeyring size={24} />,
-    // },
     {
         key: 'categories',
         label: 'Categories',
         path: 'categories',
         icon: <MdOutlineCategory size={24} />,
     },
-    // {
-    //     key: 'subscriptions',
-    //     label: 'Subscriptions',
-    //     path: 'subscriptions',
-    //     icon: <LiaCcMastercard size={24} />,
-    // },
-    // {
-    //     key: 'drivers',
-    //     label: 'Subscribers',
-    //     path: 'drivers',
-    //     icon: <LuUserCheck size={24} />,
-    // },
     {
         key: 'reports',
         label: 'Reports',
@@ -59,10 +43,10 @@ const sidebarItems: TSidebarItem[] = [
         icon: <TfiLocationPin size={24} />,
     },
     {
-        key: 'manage-admin',
-        label: 'Manage Admin',
-        path: 'manage-admin',
-        icon: <PiUserGear size={24} />,
+        key: 'supports',
+        label: 'Supports',
+        path: 'supports',
+        icon: <BiSupport size={24} />,
     },
     {
         key: 'settings',
@@ -83,6 +67,12 @@ const sidebarItems: TSidebarItem[] = [
                 icon: <LucideUserRound size={20} />,
             },
             {
+                key: 'faq',
+                label: 'FAQ',
+                path: 'faq',
+                icon: <GoQuestion size={20} />,
+            },
+            {
                 key: 'about-us',
                 label: 'About us',
                 path: 'about-us',
@@ -100,12 +90,6 @@ const sidebarItems: TSidebarItem[] = [
                 path: 'privacy-policy',
                 icon: <LuClipboardList size={20} />,
             },
-            // {
-            //     key: 'disclaimer',
-            //     label: 'Disclaimer',
-            //     path: 'disclaimer',
-            //     icon: <BsPatchQuestion size={20} />,
-            // },
         ],
     },
 ];

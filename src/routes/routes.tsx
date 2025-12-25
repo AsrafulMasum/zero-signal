@@ -20,6 +20,7 @@ import ManageAdmin from '../pages/dashboard/manage-admin';
 import Category from '../pages/dashboard/category';
 import Spots from '../pages/dashboard/orders';
 import Reports from '../pages/dashboard/reports';
+import FAQ from '../pages/dashboard/faq';
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
             { path: 'adminProfile', element: <AdminProfile /> },
             { path: 'changePassword', element: <ChangePassword /> },
             { path: 'notification', element: <Notification /> },
+            { path: 'faq', element: <FAQ /> },
             { path: 'privacy-policy', element: <PrivacyPolicy /> },
             { path: 'terms-and-condition', element: <TermsAndCondition /> },
             { path: 'about-us', element: <AboutUs /> },

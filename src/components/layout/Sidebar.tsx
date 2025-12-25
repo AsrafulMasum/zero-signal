@@ -68,6 +68,7 @@ const Sidebar = () => {
                                     itemHeight: 45,
                                     itemMarginBlock: 9,
                                     itemSelectedBg: '#2E4F3E',
+                                    itemColor: '#808080',
                                 },
                             },
                         }}

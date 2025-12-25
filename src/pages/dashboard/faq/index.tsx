@@ -1,31 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ConfigProvider, Modal, Form, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { GoQuestion } from 'react-icons/go';
 import { CiEdit } from 'react-icons/ci';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import {
+    useCreateFAQMutation,
+    useDeleteFAQMutation,
+    useGetFAQQuery,
+    useUpdateFAQMutation,
+} from '../../../redux/apiSlices/faqSlice';
+import toast from 'react-hot-toast';
 
 interface FaqItem {
-    id: string;
+    _id: string;
     question: string;
     answer: string;
 }
 
-const initialFaqs: FaqItem[] = [
-    {
-        id: '1',
-        question: 'How do I create an account',
-        answer: 'You can create an account by signing up with your email address.',
-    },
-    {
-        id: '2',
-        question: 'How can I reset my password',
-        answer: 'Click on ‘Forgot Password’ and follow the steps.',
-    },
-];
-
 const FAQ = () => {
-    const [faqs, setFaqs] = useState<FaqItem[]>(initialFaqs);
+    const [createFAQ, { isLoading: isCreating }] = useCreateFAQMutation();
+    const [updateFAQ, { isLoading: isUpdating }] = useUpdateFAQMutation();
+    const [deleteFAQ, { isLoading: isDeleting }] = useDeleteFAQMutation();
+
+    const { data, refetch } = useGetFAQQuery({});
+    const [faqs, setFaqs] = useState<FaqItem[] | undefined>();
 
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -38,16 +37,17 @@ const FAQ = () => {
     const [editForm] = Form.useForm();
 
     // ADD
-    const handleAdd = () => {
-        addForm.validateFields().then((values) => {
-            const newItem: FaqItem = {
-                id: String(Date.now()),
-                ...values,
-            };
-            setFaqs([...faqs, newItem]);
+    const handleAdd = async () => {
+        try {
+            const values = await addForm.validateFields();
+            await createFAQ(values).unwrap();
+            toast.success('FAQ created successfully');
             addForm.resetFields();
             setIsAddOpen(false);
-        });
+            refetch();
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Failed to create FAQ. Please try again.');
+        }
     };
 
     // EDIT
@@ -57,12 +57,17 @@ const FAQ = () => {
         setIsEditOpen(true);
     };
 
-    const handleEdit = () => {
-        editForm.validateFields().then((values) => {
+    const handleEdit = async () => {
+        try {
+            const values = await editForm.validateFields();
             if (!selectedFaq) return;
-            setFaqs(faqs.map((faq) => (faq.id === selectedFaq.id ? { ...faq, ...values } : faq)));
+            await updateFAQ({ id: selectedFaq._id, faq: values }).unwrap();
+            toast.success('FAQ updated successfully');
             setIsEditOpen(false);
-        });
+            refetch();
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Failed to update FAQ. Please try again.');
+        }
     };
 
     // DELETE
@@ -71,10 +76,22 @@ const FAQ = () => {
         setIsDeleteOpen(true);
     };
 
-    const handleDelete = () => {
-        setFaqs(faqs.filter((faq) => faq.id !== deleteId));
-        setIsDeleteOpen(false);
+    const handleDelete = async () => {
+        try {
+            await deleteFAQ(deleteId).unwrap();
+            toast.success('FAQ deleted successfully');
+            setIsDeleteOpen(false);
+            refetch();
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Failed to delete FAQ. Please try again.');
+        }
     };
+
+    useEffect(() => {
+        if (data) {
+            setFaqs(data.data);
+        }
+    }, [data]);
 
     return (
         <ConfigProvider
@@ -84,7 +101,7 @@ const FAQ = () => {
                 },
             }}
         >
-            <div className="bg-white h-full px-3 py-2 rounded-lg">
+            <div className="bg-transparent h-full px-3 py-2 rounded-lg">
                 {/* Header */}
                 <div className="flex justify-between items-center px-4 py-3">
                     <h3 className="text-[#757575] text-[18px] font-medium">FAQ</h3>
@@ -106,9 +123,9 @@ const FAQ = () => {
                 </div>
 
                 {/* LIST VIEW - SAME DESIGN AS YOUR ORIGINAL */}
-                <div className="bg-white pb-6 px-4 rounded-md">
-                    {faqs.map((item) => (
-                        <div key={item.id} className="flex justify-between items-start gap-4 border-b pb-4 mt-4">
+                <div className="pb-6 px-4 rounded-md space-y-8">
+                    {faqs?.map((item) => (
+                        <div key={item._id} className="flex justify-between items-start gap-4 border-b pb-4 mt-4">
                             {/* Icon */}
                             <div className="mt-3">
                                 <GoQuestion color="#2E4F3E" size={25} />
@@ -116,8 +133,8 @@ const FAQ = () => {
 
                             {/* Text Section */}
                             <div className="w-full">
-                                <p className="text-base font-medium border-b py-2 px-4 rounded-lg bg-[#f8f8f8] flex items-center gap-8 text-[#757575]">
-                                    {item.question} ?
+                                <p className="text-lg font-medium border-b py-2 px-4 rounded-lg flex items-center gap-8 text-[#757575]">
+                                    {item.question}
                                 </p>
 
                                 <div className="flex items-start gap-2 py-2 px-4 rounded-lg mt-3">
@@ -134,7 +151,7 @@ const FAQ = () => {
                                 />
                                 <RiDeleteBin6Line
                                     size={24}
-                                    onClick={() => openDelete(item.id)}
+                                    onClick={() => openDelete(item._id)}
                                     className="cursor-pointer text-[#D93D04]"
                                 />
                             </div>
@@ -149,6 +166,7 @@ const FAQ = () => {
                     onCancel={() => setIsAddOpen(false)}
                     onOk={handleAdd}
                     okText="Save"
+                    confirmLoading={isCreating}
                     width={450}
                 >
                     <h2 className="text-lg font-semibold mb-4">Add FAQ</h2>
@@ -171,6 +189,7 @@ const FAQ = () => {
                     onCancel={() => setIsEditOpen(false)}
                     onOk={handleEdit}
                     okText="Update"
+                    confirmLoading={isUpdating}
                     width={450}
                 >
                     <h2 className="text-lg font-semibold mb-4">Update FAQ</h2>
@@ -188,17 +207,33 @@ const FAQ = () => {
 
                 {/* ---------------- Delete Modal ---------------- */}
                 <Modal
-                    centered
                     open={isDeleteOpen}
                     onCancel={() => setIsDeleteOpen(false)}
-                    onOk={handleDelete}
-                    okText="Delete"
-                    okButtonProps={{ danger: true }}
-                    width={380}
+                    footer={null}
+                    loading={isDeleting}
+                    closeIcon={<span className="text-gray-400 hover:text-gray-600 text-xl">×</span>}
+                    width={400}
+                    centered
                 >
-                    <div className="text-center py-6">
-                        <p className="text-[#D93D04] font-semibold text-lg">Are you sure?</p>
-                        <p className="mt-3 text-gray-700">Do you want to delete this FAQ?</p>
+                    <div className="p-4 text-center">
+                        <p className="text-[#272728] text-xl">Are you sure?</p>
+                        <p className="pt-4 pb-10 text-[#898888]">
+                            Do you really want to delete these records? This process cannot be undone.
+                        </p>
+                        <div className="flex items-center justify-between">
+                            <button
+                                onClick={() => setIsDeleteOpen(false)}
+                                className="text-[#272728] bg-white px-6 py-2 rounded-md border"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="bg-[#EA545526] text-[#EA5455] px-6 py-2 rounded-md"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </Modal>
             </div>
