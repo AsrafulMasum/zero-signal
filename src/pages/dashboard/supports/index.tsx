@@ -1,23 +1,40 @@
-import { Button, ConfigProvider, Input, Table, Tooltip } from 'antd';
+import { Button, ConfigProvider, Input, Modal, Table, Tooltip } from 'antd';
 import type { ColumnType } from 'antd/es/table/interface';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
-import { Report } from '../../../types/types';
 import { useState } from 'react';
 import { imageUrl } from '../../../redux/api/baseApi';
-import { useGetAllReportsQuery } from '../../../redux/apiSlices/reportsSlice';
 import { BsThreeDots } from 'react-icons/bs';
-import { AiOutlineInfoCircle } from 'react-icons/ai';
+import { useGetSupportMessagesQuery, useReplySupportMessagesMutation } from '../../../redux/apiSlices/supportsSlice';
+import { Support } from '../../../types/types';
+import moment from 'moment';
+import { VscReply } from 'react-icons/vsc';
 
-export default function Reports() {
+const statusColorMap = {
+    pending: { color: '#FF4D4F', bg: '#FFD8D7' },
+    resolved: { color: '#52C41A', bg: '#D9F2CD' },
+};
+
+export default function Supports() {
     const limit = 8;
     const [page, setPage] = useState(1);
-    const { data } = useGetAllReportsQuery({ page, limit });
-    const reportsData = data?.data;
+    const { data } = useGetSupportMessagesQuery({ page, limit });
+    const supportsData = data?.data;
 
-    const [showOrderDetails, setShowOrderDetails] = useState<Report | null>(null);
-    console.log(showOrderDetails);
+    const [replySupportMessages, { isLoading }] = useReplySupportMessagesMutation();
 
-    const columns: ColumnType<Report>[] = [
+    const [value, setValue] = useState<Support | null>(null);
+    console.log(supportsData);
+
+    const handleReply = async () => {
+        try {
+            await replySupportMessages({ id: value?._id, reply: value?.message }).unwrap();
+            setValue(null);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const columns: ColumnType<Support>[] = [
         {
             title: 'Serial No.',
             dataIndex: 'serialNo',
@@ -54,47 +71,42 @@ export default function Reports() {
             ),
         },
         {
-            title: 'Report Type',
-            dataIndex: 'type',
-            key: 'type',
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
             responsive: ['md'] as any,
+            render: (_, record) => <span>{record?.user?.email}</span>,
         },
         {
-            title: 'Reported Item',
-            dataIndex: 'type',
-            key: 'type',
-            responsive: ['md'] as any,
-            render: (_, record) => {
+            title: 'Date',
+            dataIndex: 'date',
+            key: 'date',
+            render: (_, record) => <span>{moment(record?.createdAt).format('YYYY-MM-DD')}</span>,
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: Support['status'], record: Support) => {
+                const key = status as keyof typeof statusColorMap;
+                const currentStyle = statusColorMap[key] || { color: '#595959', bg: '#FAFAFA' };
+
                 return (
-                    <div
+                    <p
+                        className="capitalize px-1 py-0.5 rounded-lg w-28"
                         style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12,
+                            color: currentStyle.color,
                         }}
                     >
-                        <img
-                            src={
-                                record?.type === 'User'
-                                    ? record?.reportedUser?.image?.startsWith('http')
-                                        ? record.reportedUser.image
-                                        : `${imageUrl}${record?.reportedUser?.image}`
-                                    : record?.item?.images?.[0]?.startsWith('http')
-                                    ? record.item.images?.[0]
-                                    : `${imageUrl}${record.item.images?.[0]}`
-                            }
-                            className="w-10 h-10 object-cover rounded-full"
-                        />
-
-                        <p className="text-sm capitalize">{record?.user?.name}</p>
-                    </div>
+                        {record?.status}
+                    </p>
                 );
             },
         },
         {
             title: 'Description',
-            dataIndex: 'reson',
-            key: 'reson',
+            dataIndex: 'message',
+            key: 'message',
             responsive: ['md'] as any,
             render: (text) => {
                 const shortText = text && text.length > 15 ? text.substring(0, 15) + '...' : text;
@@ -113,13 +125,13 @@ export default function Reports() {
         {
             title: 'Action',
             key: 'action',
-            render: (_: any, record: Report) => (
+            render: (_: any, record: Support) => (
                 <div className="flex gap-2">
                     <Button
                         type="text"
-                        icon={<AiOutlineInfoCircle size={24} />}
+                        icon={<VscReply size={24} />}
                         className="text-gray-500 hover:text-blue-500"
-                        onClick={() => setShowOrderDetails(record)}
+                        onClick={() => setValue(record)}
                     />
                 </div>
             ),
@@ -164,7 +176,7 @@ export default function Reports() {
                     <Table
                         columns={columns}
                         rowKey={'_id'}
-                        dataSource={reportsData as any}
+                        dataSource={supportsData as any}
                         pagination={{
                             pageSize: limit,
                             total: data?.pagination?.total,
@@ -175,6 +187,46 @@ export default function Reports() {
                     />
                 </ConfigProvider>
             </div>
+            <Modal centered open={!!value} onCancel={() => setValue(null)} width={500} footer={false}>
+                <div className="p-6">
+                    <h1 className="text-[20px] font-medium mb-3">Reply A Message</h1>
+                    <p className="text-lg font-medium mb-5">{value?.message}</p>
+                    <form onSubmit={handleReply}>
+                        <div style={{ marginBottom: '16px' }}>
+                            <label style={{ display: 'block', marginBottom: '5px' }}>Message</label>
+                            <textarea
+                                placeholder="Enter message"
+                                style={{
+                                    border: '1px solid #E0E4EC',
+                                    padding: '10px',
+                                    height: '152px',
+                                    background: 'white',
+                                    borderRadius: '8px',
+                                    outline: 'none',
+                                    width: '100%',
+                                    resize: 'none',
+                                }}
+                                name="replyMessage"
+                            />
+                        </div>
+                        <input
+                            className="cursor-pointer"
+                            style={{
+                                width: '100%',
+                                border: 'none',
+                                height: '44px',
+                                background: '#0F78FF',
+                                color: 'white',
+                                borderRadius: '8px',
+                                outline: 'none',
+                                padding: '10px 20px',
+                            }}
+                            value={isLoading ? 'Sending...' : 'Save & change'}
+                            type="submit"
+                        />
+                    </form>
+                </div>
+            </Modal>
         </>
     );
 }

@@ -145,6 +145,39 @@ export interface Report {
     productImage: string;
 }
 
+export interface Support {
+    user: {
+        name: string;
+        image: string;
+        email: string;
+    };
+    reportedUser: {
+        name: string;
+        image: string;
+    };
+    item: {
+        title: string;
+        images: string[];
+    };
+    createdAt: string;
+    reson: string;
+    type: string;
+    images: string[];
+    email: string;
+    key: string;
+    orderNumber: string;
+    customerName: string;
+    chefName: string;
+    itemCount: number;
+    city: string;
+    price: number;
+    revenue: number;
+    orderData: string;
+    deliveryStatus: 'pending' | 'completed' | 'cancelled' | 'delivered';
+    status: 'active' | 'inactive';
+    productImage: string;
+}
+
 export interface WaitingListTypes {
     key: string;
     customerName: string;

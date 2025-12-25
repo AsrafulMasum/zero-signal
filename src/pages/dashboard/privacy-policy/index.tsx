@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
         }
     };
     return (
-        <div className="px-3">
+        <div>
             <h4 className="text-2xl font-semibold py-3">Terms & Conditions</h4>
             <NoteTab content={content} handleContentChange={setContent} />
             <button

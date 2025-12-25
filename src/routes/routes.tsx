@@ -12,15 +12,11 @@ import Profile from '../pages/dashboard/profile';
 import Notification from '../pages/dashboard/notification';
 import PrivacyPolicy from '../pages/dashboard/privacy-policy';
 import AboutUs from '../pages/dashboard/about-us';
-import Subscription from '../pages/dashboard/package';
-import AdminProfile from '../pages/dashboard/admin-profile';
-import ChangePassword from '../pages/dashboard/change-password';
-import LockerManagement from '../pages/dashboard/locker-management';
-import ManageAdmin from '../pages/dashboard/manage-admin';
 import Category from '../pages/dashboard/category';
 import Spots from '../pages/dashboard/orders';
 import Reports from '../pages/dashboard/reports';
 import FAQ from '../pages/dashboard/faq';
+import Supports from '../pages/dashboard/supports';
 
 const router = createBrowserRouter([
     {
@@ -33,12 +29,8 @@ const router = createBrowserRouter([
             { path: 'categories', element: <Category /> },
             { path: 'spots', element: <Spots /> },
             { path: 'reports', element: <Reports /> },
-            { path: 'locker-management', element: <LockerManagement /> },
-            { path: 'manage-admin', element: <ManageAdmin /> },
-            { path: 'subscriptions', element: <Subscription /> },
+            { path: 'supports', element: <Supports /> },
             { path: 'profile', element: <Profile /> },
-            { path: 'adminProfile', element: <AdminProfile /> },
-            { path: 'changePassword', element: <ChangePassword /> },
             { path: 'notification', element: <Notification /> },
             { path: 'faq', element: <FAQ /> },
             { path: 'privacy-policy', element: <PrivacyPolicy /> },
