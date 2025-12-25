@@ -116,3 +116,7 @@ body {
 .ant-pagination .ant-pagination-item-active a {
     color: #fff !important;
 }
+
+.jodit-toolbar__box {
+    background: #F5E9DF !important;
+}

@@ -28,33 +28,12 @@ export default function NoteTab({
     height: height,
      disabled: isDesabled,
     style: {
-      background: "#fff",
-      borderRadius: "17px",
+      background: "#FFF4E9",
       border:"none",
-      boxShadow:"none"
-      // padding: "8px",
+      boxShadow:"none",
+      padding: "8px",
     },
     ...(isSmallSize && {buttons: ["paragraph", "bold", "italic", "underline", "ul", "ol", "brush"]}),
-    // ✅ Force same buttons on all screen sizes
-    // buttons: ["paragraph", "bold", "italic", "underline", "ul", "ol", "brush"],
-    // buttonsMD: [
-    //   "paragraph",
-    //   "bold",
-    //   "italic",
-    //   "underline",
-    //   "ul",
-    //   "ol",
-    //   "brush",
-    // ],
-    // buttonsMD: [
-    //   "paragraph",
-    //   "bold",
-    //   "italic",
-    //   "underline",
-    //   "ul",
-    //   "ol",
-    //   "brush",
-    // ],
     showCharsCounter: false,
     showWordsCounter: false,
     showXPathInStatusbar: false,
@@ -63,12 +42,10 @@ export default function NoteTab({
   return (
     <div
       style={{
-        // border: "1px solid #003877",
         borderRadius: "11px",
         border: "none",
-        // padding: "12px",
       }}
-      className="bg-white rounded-lg py-4"
+      className="bg-bg rounded-lg py-4"
     >
       <JoditEditor
         ref={editor}

@@ -3,8 +3,8 @@ import { LuClipboardList, LuLayoutDashboard } from 'react-icons/lu';
 import { TbBook } from 'react-icons/tb';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { PiUsers } from 'react-icons/pi';
-import { LucideUserRound } from 'lucide-react';
-import { CgLock } from 'react-icons/cg';
+// import { LucideUserRound } from 'lucide-react';
+// import { CgLock } from 'react-icons/cg';
 import { MdOutlineCategory } from 'react-icons/md';
 import { TfiLocationPin } from 'react-icons/tfi';
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
@@ -54,18 +54,18 @@ const sidebarItems: TSidebarItem[] = [
         path: 'settings',
         icon: <IoSettingsOutline size={24} />,
         children: [
-            {
-                key: 'changePassword',
-                label: 'Change Password',
-                path: 'changePassword',
-                icon: <CgLock size={20} />,
-            },
-            {
-                key: 'adminProfile',
-                label: 'Profile',
-                path: 'adminProfile',
-                icon: <LucideUserRound size={20} />,
-            },
+            // {
+            //     key: 'changePassword',
+            //     label: 'Change Password',
+            //     path: 'changePassword',
+            //     icon: <CgLock size={20} />,
+            // },
+            // {
+            //     key: 'adminProfile',
+            //     label: 'Profile',
+            //     path: 'adminProfile',
+            //     icon: <LucideUserRound size={20} />,
+            // },
             {
                 key: 'faq',
                 label: 'FAQ',
