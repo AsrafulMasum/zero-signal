@@ -114,6 +114,37 @@ export interface Spot {
     productImage: string;
 }
 
+export interface Report {
+    user: {
+        name: string;
+        image: string;
+    };
+    reportedUser: {
+        name: string;
+        image: string;
+    };
+    item: {
+        title: string;
+        images: string[];
+    };
+    reson: string;
+    type: string;
+    images: string[];
+    email: string;
+    key: string;
+    orderNumber: string;
+    customerName: string;
+    chefName: string;
+    itemCount: number;
+    city: string;
+    price: number;
+    revenue: number;
+    orderData: string;
+    deliveryStatus: 'pending' | 'completed' | 'cancelled' | 'delivered';
+    status: 'active' | 'inactive';
+    productImage: string;
+}
+
 export interface WaitingListTypes {
     key: string;
     customerName: string;

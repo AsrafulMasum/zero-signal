@@ -1,21 +1,19 @@
-import { Button, ConfigProvider, Input, Table } from 'antd';
+import { ConfigProvider, Input, Table, Tooltip } from 'antd';
 import type { ColumnType } from 'antd/es/table/interface';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
-import { Spot } from '../../../types/types';
-import { CiCircleInfo } from 'react-icons/ci';
+import { Report } from '../../../types/types';
 import { useState } from 'react';
-import OrderDetailsModal from '../../../components/modals/OrderDetailsModal';
 import { imageUrl } from '../../../redux/api/baseApi';
 import { useGetAllReportsQuery } from '../../../redux/apiSlices/reportsSlice';
+import { BsThreeDots } from 'react-icons/bs';
 
 export default function Reports() {
     const limit = 8;
     const [page, setPage] = useState(1);
-    const [showOrderDetails, setShowOrderDetails] = useState<Spot | null>(null);
-    const { data } = useGetAllReportsQuery({page, limit});
-    const spotsData = data?.data;
+    const { data } = useGetAllReportsQuery({ page, limit });
+    const reportsData = data?.data;
 
-    const columns: ColumnType<Spot>[] = [
+    const columns: ColumnType<Report>[] = [
         {
             title: 'Serial No.',
             dataIndex: 'serialNo',
@@ -24,69 +22,111 @@ export default function Reports() {
             render: (_, __, index) => <span>{index + 1}</span>,
         },
         {
-            title: 'User Name',
+            title: 'User',
             dataIndex: 'userName',
             key: 'userName',
             responsive: ['md'] as any,
-            render: (_, record) => <span>{record?.user?.name}</span>,
-        },
-        {
-            title: 'Name',
-            dataIndex: 'title',
-            key: 'title',
-            responsive: ['md'] as any,
-        },
-        {
-            title: 'Images',
-            dataIndex: 'Images',
-            key: 'Images',
-            responsive: ['md'] as any,
             render: (_, record) => (
-                <div className="flex gap-2">
-                    {record?.images?.map((image: string, index: number) => (
-                        <img
-                            key={index}
-                            src={image && image?.startsWith('http') ? image : `${imageUrl}${image}`}
-                            alt={`Image ${index}`}
-                            className="w-10 h-10 object-cover rounded-lg"
-                        />
-                    ))}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                    }}
+                >
+                    <img
+                        src={
+                            record?.user?.image && record?.user?.image.startsWith('http')
+                                ? record?.user?.image
+                                : record?.user?.image
+                                ? `${imageUrl}${record?.user?.image}`
+                                : '/default-avatar.jpg'
+                        }
+                        className="w-10 h-10 object-cover rounded-full"
+                    />
+
+                    <p className="text-sm capitalize">{record?.user?.name}</p>
                 </div>
             ),
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
-            responsive: ['md'] as any,
-        },
-        {
-            title: 'Type',
+            title: 'Report Type',
             dataIndex: 'type',
             key: 'type',
             responsive: ['md'] as any,
         },
         {
-            title: 'Action',
-            key: 'action',
-            render: (_: any, record: Spot) => (
-                <div className="flex gap-2">
-                    <Button
-                        type="text"
-                        icon={<CiCircleInfo size={24} />}
-                        className="text-gray-500 hover:text-blue-500"
-                        onClick={() => setShowOrderDetails(record)}
-                    />
-                </div>
-            ),
+            title: 'Reported Item',
+            dataIndex: 'type',
+            key: 'type',
+            responsive: ['md'] as any,
+            render: (_, record) => {
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                        }}
+                    >
+                        <img
+                            src={
+                                record?.type === 'User'
+                                    ? record?.reportedUser?.image?.startsWith('http')
+                                        ? record.reportedUser.image
+                                        : `${imageUrl}${record?.reportedUser?.image}`
+                                    : record?.item?.images?.[0]?.startsWith('http')
+                                    ? record.item.images?.[0]
+                                    : `${imageUrl}${record.item.images?.[0]}`
+                            }
+                            className="w-10 h-10 object-cover rounded-full"
+                        />
+
+                        <p className="text-sm capitalize">{record?.user?.name}</p>
+                    </div>
+                );
+            },
         },
+        {
+            title: 'Description',
+            dataIndex: 'reson',
+            key: 'reson',
+            responsive: ['md'] as any,
+            render: (text) => {
+                const shortText = text && text.length > 15 ? text.substring(0, 15) + '...' : text;
+                return (
+                    <span className="w-44 flex justify-between items-center">
+                        {shortText}
+                        {text && text.length > 15 && (
+                            <Tooltip title={text}>
+                                <BsThreeDots className="ml-2 bg-gray-500 h-6 w-6 rounded-sm p-1 cursor-pointer" />
+                            </Tooltip>
+                        )}
+                    </span>
+                );
+            },
+        },
+        // {
+        //     title: 'Action',
+        //     key: 'action',
+        //     render: (_: any, record: Report) => (
+        //         <div className="flex gap-2">
+        //             <Button
+        //                 type="text"
+        //                 icon={<CiCircleInfo size={24} />}
+        //                 className="text-gray-500 hover:text-blue-500"
+        //                 onClick={() => setShowOrderDetails(record)}
+        //             />
+        //         </div>
+        //     ),
+        // },
     ];
 
     return (
         <>
             <div className="rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
-                    <HeaderTitle title="All Transactions" />
+                    <HeaderTitle title="Reports" />
                     <ConfigProvider
                         theme={{
                             token: {
@@ -120,7 +160,7 @@ export default function Reports() {
                     <Table
                         columns={columns}
                         rowKey={'_id'}
-                        dataSource={spotsData as any}
+                        dataSource={reportsData as any}
                         pagination={{
                             pageSize: limit,
                             total: data?.pagination?.total,
@@ -131,7 +171,6 @@ export default function Reports() {
                     />
                 </ConfigProvider>
             </div>
-            <OrderDetailsModal showOrderDetails={showOrderDetails} setShowOrderDetails={setShowOrderDetails} />
         </>
     );
 }
