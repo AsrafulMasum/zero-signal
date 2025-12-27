@@ -3,13 +3,25 @@ import { Link } from 'react-router-dom';
 import { useProfileQuery } from '../../redux/apiSlices/authSlice';
 import { imageUrl } from '../../redux/api/baseApi';
 import { useGetNotificationQuery } from '../../redux/apiSlices/notificationSlice';
+import { useEffect, useMemo } from 'react';
+import { io } from 'socket.io-client';
 
 export default function DashboardHeader() {
     const { data: profileRes } = useProfileQuery({});
     const profile = profileRes?.data;
 
-    const { data } = useGetNotificationQuery({});
+    const { data, refetch } = useGetNotificationQuery({});
     const notifications = data?.data;
+
+    const socket = useMemo(() => io(imageUrl), []);
+
+    useEffect(() => {
+        socket.on(`notification::${profile?._id}`, (data) => {
+            console.log(data);
+
+            refetch();
+        });
+    }, [socket, profile?._id]);
 
     return (
         <div>

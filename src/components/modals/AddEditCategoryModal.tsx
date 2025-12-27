@@ -242,7 +242,9 @@ export default function AddEditCategoryModal({
                                     >
                                         <img
                                             src={
-                                                imagePreview?.startsWith('http')
+                                                imagePreview?.startsWith('blob:')
+                                                    ? imagePreview
+                                                    : imagePreview?.startsWith('http')
                                                     ? imagePreview
                                                     : `${imageUrl}${imagePreview}`
                                             }

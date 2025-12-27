@@ -1,4 +1,4 @@
-import { api } from "../api/baseApi";
+import { api } from '../api/baseApi';
 
 const notificationSlice = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -9,18 +9,20 @@ const notificationSlice = api.injectEndpoints({
         }),
 
         changeStatusNotification: builder.mutation({
-            query: ({id}:{id:string}) => ({
-                method: "PATCH",
+            query: ({ id }: { id: string }) => ({
+                method: 'PATCH',
                 url: `/notificaiton/${id}/seen`,
             }),
         }),
+
         readAllNotification: builder.mutation({
             query: () => ({
-                method: "PATCH",
-                url: `/notificaiton/read-all`,
+                method: 'PATCH',
+                url: `/notification`,
             }),
-        })
+        }),
     }),
-})
+});
 
-export const { useGetNotificationQuery, useChangeStatusNotificationMutation, useReadAllNotificationMutation } = notificationSlice
+export const { useGetNotificationQuery, useChangeStatusNotificationMutation, useReadAllNotificationMutation } =
+    notificationSlice;

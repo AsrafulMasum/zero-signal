@@ -16,9 +16,26 @@ import {
     useGetSubCategoriesQuery,
 } from '../../../redux/apiSlices/categorySlice';
 import toast from 'react-hot-toast';
+import { imageUrl } from '../../../redux/api/baseApi';
 
 /* ---------------- TYPES ---------------- */
 type ActiveTab = 'category' | 'subcategory' | 'route';
+
+const imageColumn: ColumnType<CategoryTypes> = {
+    title: 'Image',
+    dataIndex: 'icon',
+    key: 'icon',
+    render: (icon: string) =>
+        icon ? (
+            <img
+                src={icon?.startsWith('http') ? icon : `${imageUrl}${icon}`}
+                alt="route"
+                className="w-12 h-12 object-cover rounded"
+            />
+        ) : (
+            <span className="text-gray-400">No Image</span>
+        ),
+};
 
 export default function Category() {
     /* ---------------- API ---------------- */
@@ -91,6 +108,7 @@ export default function Category() {
             dataIndex: 'name',
             key: 'name',
         },
+        ...(activeTab === 'route' ? [imageColumn] : []),
         {
             title: 'Action',
             key: 'action',
