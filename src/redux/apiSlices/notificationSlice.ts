@@ -3,8 +3,8 @@ import { api } from "../api/baseApi";
 const notificationSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         getNotification: builder.query({
-            query: ({query}:{query?:string}) => ({
-                url: `/notificaiton?`+query,
+            query: () => ({
+                url: `/notification`,
             }),
         }),
 
