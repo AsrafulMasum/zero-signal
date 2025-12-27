@@ -1,5 +1,5 @@
 import { Button, Checkbox, ConfigProvider, Form, Input } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../redux/apiSlices/authSlice';
 import toast from 'react-hot-toast';
 
@@ -11,8 +11,6 @@ export type errorType = {
 };
 
 const Login = () => {
-    const navigate = useNavigate();
-
     const [login] = useLoginMutation();
 
     const savedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null;
@@ -38,7 +36,7 @@ const Login = () => {
                 } else {
                     localStorage.removeItem('user');
                 }
-                navigate('/');
+                window.location.replace('/');
             } else {
                 toast.error('Login failed.', res?.message || 'Please try again.');
             }

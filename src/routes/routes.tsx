@@ -17,11 +17,16 @@ import Spots from '../pages/dashboard/orders';
 import Reports from '../pages/dashboard/reports';
 import FAQ from '../pages/dashboard/faq';
 import Supports from '../pages/dashboard/supports';
+import PrivateRoute from '../provider/PrivateRoutes';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
+        element: (
+            <PrivateRoute>
+                <App />
+            </PrivateRoute>
+        ),
         errorElement: <ErrorPage />,
         children: [
             { path: '', element: <Dashboard /> },
