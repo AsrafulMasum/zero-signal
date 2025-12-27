@@ -4,10 +4,12 @@ export default function BlockModal({
     isBlockModalVisible,
     handleBlockCancel,
     handleBlockConfirm,
+    isBlocked
 }: {
     isBlockModalVisible: boolean;
     handleBlockCancel: () => void;
     handleBlockConfirm: () => void;
+    isBlocked: boolean;
 }) {
     const handleDelete = () => {
         handleBlockConfirm();
@@ -33,7 +35,7 @@ export default function BlockModal({
                         Cancel
                     </button>
                     <button onClick={handleDelete} className="bg-[#EA545526] text-[#EA5455] px-6 py-2 rounded-md">
-                        Block this user
+                        {isBlocked ? 'Unblock' : 'Block'} this user
                     </button>
                 </div>
             </div>

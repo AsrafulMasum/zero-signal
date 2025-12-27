@@ -240,6 +240,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                 isBlockModalVisible={isBlockModalVisible}
                 handleBlockCancel={handleBlockCancel}
                 handleBlockConfirm={handleBlockConfirm}
+                isBlocked={userToBlock?.status !== 'active'}
             />
         </>
     );
