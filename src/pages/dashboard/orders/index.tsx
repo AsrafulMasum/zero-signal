@@ -11,9 +11,15 @@ import { imageUrl } from '../../../redux/api/baseApi';
 export default function Spots() {
     const limit = 8;
     const [page, setPage] = useState(1);
+    const [searchText, setSearchText] = useState('');
     const [showOrderDetails, setShowOrderDetails] = useState<Spot | null>(null);
-    const { data } = useGetSpotsQuery({page, limit});
+    const { data } = useGetSpotsQuery({ page, limit, searchTerm: searchText });
     const spotsData = data?.data;
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setSearchText(e.target.value);
+    };
 
     const columns: ColumnType<Spot>[] = [
         {
@@ -96,6 +102,7 @@ export default function Spots() {
                     >
                         <Input
                             placeholder="Search"
+                            onChange={handleSearchChange}
                             className=""
                             style={{ width: 280, height: 40, backgroundColor: '#f5e9df' }}
                             prefix={<i className="bi bi-search"></i>}

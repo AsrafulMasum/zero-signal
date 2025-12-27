@@ -18,12 +18,18 @@ const statusColorMap = {
 export default function Supports() {
     const limit = 8;
     const [page, setPage] = useState(1);
-    const { data, refetch } = useGetSupportMessagesQuery({ page, limit });
+    const [searchText, setSearchText] = useState('');
+    const { data, refetch } = useGetSupportMessagesQuery({ page, limit, searchTerm: searchText });
     const supportsData = data?.data;
 
     const [replySupportMessages, { isLoading }] = useReplySupportMessagesMutation();
 
     const [value, setValue] = useState<Support | null>(null);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setSearchText(e.target.value);
+    };
 
     const handleReply = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -158,6 +164,7 @@ export default function Supports() {
                     >
                         <Input
                             placeholder="Search"
+                            onChange={handleSearchChange}
                             className=""
                             style={{ width: 280, height: 40, backgroundColor: '#f5e9df' }}
                             prefix={<i className="bi bi-search"></i>}
@@ -221,7 +228,7 @@ export default function Supports() {
                                 width: '100%',
                                 border: 'none',
                                 height: '44px',
-                                background: '#0F78FF',
+                                background: '#2E4F3E',
                                 color: 'white',
                                 borderRadius: '8px',
                                 outline: 'none',

@@ -19,16 +19,22 @@ const statusColorMap = {
 export default function Users({ dashboard }: { dashboard?: boolean }) {
     const [page, setPage] = useState(1);
     const pageSize = 8;
+    const [searchText, setSearchText] = useState('');
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isBlockModalVisible, setIsBlockModalVisible] = useState<boolean>(false);
     const [userToBlock, setUserToBlock] = useState<User | null>(null);
 
-    const { data, refetch } = useGetUsersQuery({ page, limit: pageSize });
+    const { data, refetch } = useGetUsersQuery({ page, limit: pageSize, searchTerm: searchText });
     const userData = data?.data;
     const filteredUser = userData?.slice(0, 3);
 
     const [changeStatusUser] = useChangeStatusUserMutation();
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setSearchText(e.target.value);
+    };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -190,6 +196,7 @@ export default function Users({ dashboard }: { dashboard?: boolean }) {
                     ) : (
                         <Input
                             placeholder="Search"
+                            onChange={handleSearchChange}
                             className=""
                             style={{ width: 280, height: 40, backgroundColor: '#F5E9DF' }}
                             prefix={<i className="bi bi-search"></i>}

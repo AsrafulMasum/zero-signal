@@ -1,15 +1,16 @@
-import { api } from "../api/baseApi";
+import { api } from '../api/baseApi';
 
 const reportsSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         getAllReports: builder.query({
-            query: ({ page, limit }: { page?: number; limit?: number }) => {
+            query: ({ page, limit, searchTerm }: { page?: number; limit?: number; searchTerm?: string }) => {
+                console.log(searchTerm);
                 return {
-                    url: `/report?page=${page}&limit=${limit}`,
+                    url: `/report?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
                     method: 'GET',
                 };
             },
-        })
+        }),
     }),
 });
 

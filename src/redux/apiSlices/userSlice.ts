@@ -3,9 +3,9 @@ import { api } from '../api/baseApi';
 const userSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         getUsers: builder.query({
-            query: ({ page, limit }: { page?: number, limit?: number }) => {
+            query: ({ page, limit, searchTerm }: { page?: number; limit?: number; searchTerm?: string }) => {
                 return {
-                    url: `/user?page=${page}&limit=${limit}`,
+                    url: `/user?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
                     method: 'GET',
                 };
             },

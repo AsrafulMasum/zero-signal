@@ -11,10 +11,16 @@ import { AiOutlineInfoCircle } from 'react-icons/ai';
 export default function Reports() {
     const limit = 8;
     const [page, setPage] = useState(1);
-    const { data } = useGetAllReportsQuery({ page, limit });
+    const [searchText, setSearchText] = useState('');
+    const { data } = useGetAllReportsQuery({ page, limit, searchTerm: searchText });
     const reportsData = data?.data;
 
     const [showOrderDetails, setShowOrderDetails] = useState<Report | null>(null);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setSearchText(e.target.value);
+    };
 
     const columns: ColumnType<Report>[] = [
         {
@@ -139,6 +145,7 @@ export default function Reports() {
                     >
                         <Input
                             placeholder="Search"
+                            onChange={handleSearchChange}
                             className=""
                             style={{ width: 280, height: 40, backgroundColor: '#f5e9df' }}
                             prefix={<i className="bi bi-search"></i>}
@@ -183,9 +190,7 @@ export default function Reports() {
                 footer={false}
             >
                 <div>
-                    <p className='text-lg'>
-                        Reason:  {showOrderDetails?.reson}
-                    </p>
+                    <p className="text-lg">Reason: {showOrderDetails?.reson}</p>
                 </div>
             </Modal>
         </>
