@@ -146,6 +146,7 @@ export interface Report {
 }
 
 export interface Support {
+    _id: string;
     user: {
         name: string;
         image: string;
@@ -158,7 +159,8 @@ export interface Support {
     item: {
         title: string;
         images: string[];
-    };
+    }
+    message: string;
     createdAt: string;
     reson: string;
     type: string;

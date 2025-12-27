@@ -86,7 +86,7 @@ export default function Spots() {
         <>
             <div className="rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
-                    <HeaderTitle title="All Transactions" />
+                    <HeaderTitle title="Spots" />
                     <ConfigProvider
                         theme={{
                             token: {

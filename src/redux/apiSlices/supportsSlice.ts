@@ -14,9 +14,9 @@ const supportsApi = api.injectEndpoints({
     replySupportMessages: builder.mutation({
       query: (payload) => {
         return {
-          url: `/support/reply/${payload?.id}`,
-          method: "POST",
-          body: payload?.replyMessage,
+          url: `/support/${payload?.id}`,
+          method: "PATCH",
+          body: payload?.reply,
         };
       },
     }),

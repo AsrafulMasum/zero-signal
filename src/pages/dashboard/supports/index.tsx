@@ -8,6 +8,7 @@ import { useGetSupportMessagesQuery, useReplySupportMessagesMutation } from '../
 import { Support } from '../../../types/types';
 import moment from 'moment';
 import { VscReply } from 'react-icons/vsc';
+import toast from 'react-hot-toast';
 
 const statusColorMap = {
     pending: { color: '#FF4D4F', bg: '#FFD8D7' },
@@ -17,18 +18,23 @@ const statusColorMap = {
 export default function Supports() {
     const limit = 8;
     const [page, setPage] = useState(1);
-    const { data } = useGetSupportMessagesQuery({ page, limit });
+    const { data, refetch } = useGetSupportMessagesQuery({ page, limit });
     const supportsData = data?.data;
 
     const [replySupportMessages, { isLoading }] = useReplySupportMessagesMutation();
 
     const [value, setValue] = useState<Support | null>(null);
-    console.log(supportsData);
 
-    const handleReply = async () => {
+    const handleReply = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         try {
-            await replySupportMessages({ id: value?._id, reply: value?.message }).unwrap();
+            const res = await replySupportMessages({ id: value?._id, reply: { reply: value?.message } }).unwrap();
             setValue(null);
+            if (res.success) {
+                toast.success(res?.message);
+                refetch();
+            }
         } catch (error) {
             console.log(error);
         }
@@ -189,8 +195,8 @@ export default function Supports() {
             </div>
             <Modal centered open={!!value} onCancel={() => setValue(null)} width={500} footer={false}>
                 <div className="p-6">
-                    <h1 className="text-[20px] font-medium mb-3">Reply A Message</h1>
-                    <p className="text-lg font-medium mb-5">{value?.message}</p>
+                    <h1 className="text-xl font-medium mb-3">Reply A Message</h1>
+                    <p className="mb-5">{value?.message}</p>
                     <form onSubmit={handleReply}>
                         <div style={{ marginBottom: '16px' }}>
                             <label style={{ display: 'block', marginBottom: '5px' }}>Message</label>
