@@ -234,6 +234,7 @@ export interface ChefsTypes {
 
 export interface CategoryTypes {
     _id: string;
+    name?: string;
     categoryName?: string;
     categoryImage?: string;
     subCategoryName?: string;

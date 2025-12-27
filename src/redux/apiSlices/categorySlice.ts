@@ -73,6 +73,42 @@ const categoriesSlice = api.injectEndpoints({
                 };
             },
         }),
+
+        getRouteTypes: builders.query({
+            query: () => ({
+                url: `/category/route-type`,
+                method: 'GET',
+            }),
+        }),
+
+        addRouteType: builders.mutation({
+            query: (data) => {
+                return {
+                    url: '/category/route-type',
+                    method: 'POST',
+                    body: data,
+                };
+            },
+        }),
+
+        deleteRouteType: builders.mutation({
+            query: (id) => {
+                return {
+                    url: `/category/route-type/${id}`,
+                    method: 'DELETE',
+                };
+            },
+        }),
+
+        updateRouteType: builders.mutation({
+            query: (data) => {
+                return {
+                    url: `/category/route-type/${data?.id}`,
+                    method: 'PATCH',
+                    body: data?.payload,
+                };
+            },
+        }),
     }),
 });
 
@@ -85,4 +121,8 @@ export const {
     useAddCategoryMutation,
     useDeleteCategoryMutation,
     useUpdateCategoryMutation,
+    useGetRouteTypesQuery,
+    useAddRouteTypeMutation,
+    useDeleteRouteTypeMutation,
+    useUpdateRouteTypeMutation,
 } = categoriesSlice;

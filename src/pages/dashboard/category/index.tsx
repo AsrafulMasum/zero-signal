@@ -9,72 +9,85 @@ import AddEditCategoryModal from '../../../components/modals/AddEditCategoryModa
 import DeleteModal from '../../../components/modals/DeleteModal';
 import {
     useDeleteCategoryMutation,
+    useDeleteRouteTypeMutation,
     useDeleteSubCategoryMutation,
     useGetCategoriesQuery,
+    useGetRouteTypesQuery,
     useGetSubCategoriesQuery,
 } from '../../../redux/apiSlices/categorySlice';
 import toast from 'react-hot-toast';
 
-export default function Category() {
-    const { data, refetch } = useGetCategoriesQuery({});
-    const categoryData = data?.data;
+/* ---------------- TYPES ---------------- */
+type ActiveTab = 'category' | 'subcategory' | 'route';
 
-    const { data: subCategoryRes, refetch: subCategoryRefetch } = useGetSubCategoriesQuery({});
-    const subCategoryData = subCategoryRes?.data;
+export default function Category() {
+    /* ---------------- API ---------------- */
+    const { data: catRes, refetch: catRefetch } = useGetCategoriesQuery({});
+    const { data: subRes, refetch: subRefetch } = useGetSubCategoriesQuery({});
+    const { data: routeRes, refetch: routeRefetch } = useGetRouteTypesQuery({});
 
     const [deleteCategory] = useDeleteCategoryMutation();
     const [deleteSubCategory] = useDeleteSubCategoryMutation();
+    const [deleteRouteType] = useDeleteRouteTypeMutation();
 
-    const [activeTab, setActiveTab] = useState<'category' | 'subcategory'>('category');
-    const [categoryList, setCategoryList] = useState<CategoryTypes[]>();
-    const [subCategoryList, setSubCategoryList] = useState<CategoryTypes[]>(subCategoryData);
+    /* ---------------- STATE ---------------- */
+    const [activeTab, setActiveTab] = useState<ActiveTab>('category');
 
-    // modal states
+    const [categoryList, setCategoryList] = useState<CategoryTypes[]>([]);
+    const [subCategoryList, setSubCategoryList] = useState<CategoryTypes[]>([]);
+    const [routeTypeList, setRouteTypeList] = useState<CategoryTypes[]>([]);
+
     const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<CategoryTypes | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
+    /* ---------------- EFFECT ---------------- */
     useEffect(() => {
-        if (categoryData) {
-            setCategoryList(categoryData);
-        }
-        if (subCategoryData) {
-            setSubCategoryList(subCategoryData);
-        }
-    }, [categoryData, subCategoryData]);
+        if (catRes?.data) setCategoryList(catRes.data);
+        if (subRes?.data) setSubCategoryList(subRes.data);
+        if (routeRes?.data) setRouteTypeList(routeRes.data);
+    }, [catRes, subRes, routeRes]);
 
+    /* ---------------- DELETE HANDLER ---------------- */
     const handleDeleteConfirm = async () => {
         if (!deletingId) return;
 
         try {
             if (activeTab === 'category') {
                 await deleteCategory(deletingId).unwrap();
-                toast.success('Category deleted successfully');
-                refetch();
-            } else {
+                toast.success('Category deleted');
+                catRefetch();
+            } else if (activeTab === 'subcategory') {
                 await deleteSubCategory(deletingId).unwrap();
-                toast.success('Sub-category deleted successfully');
-                subCategoryRefetch();
+                toast.success('Sub-category deleted');
+                subRefetch();
+            } else {
+                await deleteRouteType(deletingId).unwrap();
+                toast.success('Route type deleted');
+                routeRefetch();
             }
         } catch (error: any) {
-            toast.error(error?.data?.message || 'Failed to delete. Please try again.');
+            toast.error(error?.data?.message || 'Delete failed');
         } finally {
             setIsDeleteModalOpen(false);
             setDeletingId(null);
         }
     };
 
+    /* ---------------- COMMON COLUMNS ---------------- */
     const columns: ColumnType<CategoryTypes>[] = [
         {
             title: 'Serial No.',
-            dataIndex: 'key',
-            key: 'key',
-            responsive: ['sm'] as any,
             render: (_, __, index) => <span>{index + 1}</span>,
         },
         {
-            title: 'Category Name',
+            title:
+                activeTab === 'category'
+                    ? 'Category Name'
+                    : activeTab === 'subcategory'
+                    ? 'Sub-Category Name'
+                    : 'Route Type Name',
             dataIndex: 'name',
             key: 'name',
         },
@@ -85,7 +98,7 @@ export default function Category() {
                 <div className="flex gap-2">
                     <Button
                         type="text"
-                        icon={<FiEdit size={20} />}
+                        icon={<FiEdit size={18} />}
                         onClick={() => {
                             setEditingItem(record);
                             setIsAddEditModalOpen(true);
@@ -93,7 +106,7 @@ export default function Category() {
                     />
                     <Button
                         type="text"
-                        icon={<MdOutlineDeleteOutline size={24} />}
+                        icon={<MdOutlineDeleteOutline size={22} />}
                         className="text-red-500"
                         onClick={() => {
                             setDeletingId(record._id);
@@ -105,67 +118,38 @@ export default function Category() {
         },
     ];
 
-    const subColumns: ColumnType<CategoryTypes>[] = [
-        {
-            title: 'Serial No.',
-            dataIndex: 'key',
-            key: 'key',
-            responsive: ['sm'] as any,
-            render: (_, __, index) => <span>{index + 1}</span>,
-        },
-        {
-            title: 'Sub-Category Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-                <div className="flex gap-2">
-                    <Button
-                        type="text"
-                        icon={<FiEdit size={20} />}
-                        onClick={() => {
-                            setEditingItem(record);
-                            setIsAddEditModalOpen(true);
-                        }}
-                    />
-                    <Button
-                        type="text"
-                        icon={<MdOutlineDeleteOutline size={24} />}
-                        className="text-red-500"
-                        onClick={() => {
-                            setDeletingId(record._id);
-                            setIsDeleteModalOpen(true);
-                        }}
-                    />
-                </div>
-            ),
-        },
-    ];
-
+    /* ---------------- UI ---------------- */
     return (
         <div className="rounded-lg shadow-sm border border-gray-200 p-4">
+            {/* HEADER */}
             <div className="flex items-center justify-between mb-4">
-                <HeaderTitle title={activeTab === 'category' ? 'Categories' : 'Sub-Categories'} />
-                <ConfigProvider theme={{ token: { colorPrimary: '#59A817' } }}>
-                    <div className="flex justify-end gap-4 mb-4">
-                        <button
-                            className="bg-primary h-10 px-4 rounded-md text-white text-sm font-semibold"
-                            onClick={() => setIsAddEditModalOpen(true)}
-                        >
-                            Add {activeTab === 'category' ? 'Category' : 'Sub-Category'}
-                        </button>
-                    </div>
-                </ConfigProvider>
+                <HeaderTitle
+                    title={
+                        activeTab === 'category'
+                            ? 'Categories'
+                            : activeTab === 'subcategory'
+                            ? 'Sub-Categories'
+                            : 'Route Types'
+                    }
+                />
+
+                <button
+                    className="bg-primary h-10 px-4 rounded-md text-white text-sm font-semibold"
+                    onClick={() => setIsAddEditModalOpen(true)}
+                >
+                    Add{' '}
+                    {activeTab === 'category'
+                        ? 'Category'
+                        : activeTab === 'subcategory'
+                        ? 'Sub-Category'
+                        : 'Route Type'}
+                </button>
             </div>
 
+            {/* TABLE + TABS */}
             <ConfigProvider
                 theme={{
-                    token: {
-                        colorPrimary: '#2E4F3E',
-                    },
+                    token: { colorPrimary: '#2E4F3E' },
                     components: {
                         Table: {
                             headerBg: '#2E4F3E26',
@@ -177,7 +161,7 @@ export default function Category() {
             >
                 <Tabs
                     defaultActiveKey="category"
-                    onChange={(key) => setActiveTab(key as 'category' | 'subcategory')}
+                    onChange={(key) => setActiveTab(key as ActiveTab)}
                     items={[
                         {
                             key: 'category',
@@ -186,12 +170,8 @@ export default function Category() {
                                 <Table
                                     columns={columns}
                                     dataSource={categoryList}
-                                    rowKey={'_id'}
-                                    pagination={{
-                                        pageSize: 9,
-                                        total: categoryList?.length || 0,
-                                    }}
-                                    className="custom-table"
+                                    rowKey="_id"
+                                    pagination={{ pageSize: 9 }}
                                 />
                             ),
                         },
@@ -200,14 +180,22 @@ export default function Category() {
                             label: 'Sub-Categories',
                             children: (
                                 <Table
-                                    columns={subColumns}
+                                    columns={columns}
                                     dataSource={subCategoryList}
-                                    rowKey={'_id'}
-                                    pagination={{
-                                        pageSize: 9,
-                                        total: subCategoryList?.length || 0,
-                                    }}
-                                    className="custom-table"
+                                    rowKey="_id"
+                                    pagination={{ pageSize: 9 }}
+                                />
+                            ),
+                        },
+                        {
+                            key: 'route',
+                            label: 'Route Types',
+                            children: (
+                                <Table
+                                    columns={columns}
+                                    dataSource={routeTypeList}
+                                    rowKey="_id"
+                                    pagination={{ pageSize: 9 }}
                                 />
                             ),
                         },
@@ -215,15 +203,20 @@ export default function Category() {
                 />
             </ConfigProvider>
 
-            {/* Modals */}
+            {/* MODALS */}
             <AddEditCategoryModal
                 open={isAddEditModalOpen}
-                onCancel={() => setIsAddEditModalOpen(false)}
+                onCancel={() => {
+                    setIsAddEditModalOpen(false);
+                    setEditingItem(null);
+                }}
                 editingItem={editingItem}
-                setEditingItem={setEditingItem as any}
                 activeTab={activeTab}
-                subCategoryRefetch={subCategoryRefetch}
-                refetch={refetch}
+                refetch={{
+                    category: catRefetch,
+                    subcategory: subRefetch,
+                    route: routeRefetch,
+                }}
                 categoryList={categoryList}
             />
 
