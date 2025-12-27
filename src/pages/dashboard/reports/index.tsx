@@ -1,4 +1,4 @@
-import { Button, ConfigProvider, Input, Table, Tooltip } from 'antd';
+import { Button, ConfigProvider, Input, Modal, Table, Tooltip } from 'antd';
 import type { ColumnType } from 'antd/es/table/interface';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
 import { Report } from '../../../types/types';
@@ -15,7 +15,6 @@ export default function Reports() {
     const reportsData = data?.data;
 
     const [showOrderDetails, setShowOrderDetails] = useState<Report | null>(null);
-    console.log(showOrderDetails);
 
     const columns: ColumnType<Report>[] = [
         {
@@ -175,6 +174,20 @@ export default function Reports() {
                     />
                 </ConfigProvider>
             </div>
+
+            <Modal
+                width={500}
+                centered
+                open={!!showOrderDetails}
+                onCancel={() => setShowOrderDetails(null)}
+                footer={false}
+            >
+                <div>
+                    <p className='text-lg'>
+                        Reason:  {showOrderDetails?.reson}
+                    </p>
+                </div>
+            </Modal>
         </>
     );
 }
