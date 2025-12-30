@@ -7,6 +7,8 @@ import { useState } from 'react';
 import OrderDetailsModal from '../../../components/modals/OrderDetailsModal';
 import { useGetSpotsQuery } from '../../../redux/apiSlices/spotsSlice';
 import { imageUrl } from '../../../redux/api/baseApi';
+import { IoCheckmarkOutline } from 'react-icons/io5';
+import { IoMdClose } from 'react-icons/io';
 
 export default function Spots() {
     const limit = 8;
@@ -81,6 +83,18 @@ export default function Spots() {
                         type="text"
                         icon={<CiCircleInfo size={24} />}
                         className="text-gray-500 hover:text-blue-500"
+                        onClick={() => setShowOrderDetails(record)}
+                    />
+                    <Button
+                        type="text"
+                        icon={<IoCheckmarkOutline size={24} />}
+                        className="text-[#2E4F3E] hover:text-[#2E4F3E]"
+                        onClick={() => setShowOrderDetails(record)}
+                    />
+                    <Button
+                        type="text"
+                        icon={<IoMdClose size={24} />}
+                        className="text-red-500 hover:text-red-500"
                         onClick={() => setShowOrderDetails(record)}
                     />
                 </div>
