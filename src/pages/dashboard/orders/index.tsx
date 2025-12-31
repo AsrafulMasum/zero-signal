@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 type ActionType = 'APPROVED' | 'REJECTED' | null;
 
 export default function Spots() {
-    const limit = 8;
+    const limit = 7;
     const [page, setPage] = useState(1);
     const [searchText, setSearchText] = useState('');
     const [showOrderDetails, setShowOrderDetails] = useState<Spot | null>(null);

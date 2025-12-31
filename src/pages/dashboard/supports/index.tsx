@@ -16,7 +16,7 @@ const statusColorMap = {
 };
 
 export default function Supports() {
-    const limit = 8;
+    const limit = 7;
     const [page, setPage] = useState(1);
     const [searchText, setSearchText] = useState('');
     const { data, refetch } = useGetSupportMessagesQuery({ page, limit, searchTerm: searchText });

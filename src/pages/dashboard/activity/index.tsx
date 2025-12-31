@@ -1,34 +1,36 @@
-import { Button, ConfigProvider, Input, Modal, Table, Tooltip } from 'antd';
+import { ConfigProvider, Input, Table } from 'antd';
 import type { ColumnType } from 'antd/es/table/interface';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
-import { Report } from '../../../types/types';
+import { ActivityTypes } from '../../../types/types';
 import { useState } from 'react';
 import { imageUrl } from '../../../redux/api/baseApi';
-import { useGetAllReportsQuery } from '../../../redux/apiSlices/reportsSlice';
-import { BsThreeDots } from 'react-icons/bs';
-import { AiOutlineInfoCircle } from 'react-icons/ai';
+import { useGetAllActivityQuery } from '../../../redux/apiSlices/activitySlice';
+import moment from 'moment';
 
-export default function Reports() {
+export default function Activity() {
     const limit = 7;
     const [page, setPage] = useState(1);
     const [searchText, setSearchText] = useState('');
-    const { data } = useGetAllReportsQuery({ page, limit, searchTerm: searchText });
+    const { data } = useGetAllActivityQuery({ page, limit, searchTerm: searchText });
     const reportsData = data?.data;
-
-    const [showOrderDetails, setShowOrderDetails] = useState<Report | null>(null);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setSearchText(e.target.value);
     };
 
-    const columns: ColumnType<Report>[] = [
+    const columns: ColumnType<ActivityTypes>[] = [
         {
             title: 'Serial No.',
             dataIndex: 'serialNo',
             key: 'serialNo',
             responsive: ['sm'],
             render: (_, __, index) => <span>{index + 1}</span>,
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
         },
         {
             title: 'User',
@@ -59,15 +61,9 @@ export default function Reports() {
             ),
         },
         {
-            title: 'Report Type',
-            dataIndex: 'type',
-            key: 'type',
-            responsive: ['md'] as any,
-        },
-        {
-            title: 'Reported Item',
-            dataIndex: 'type',
-            key: 'type',
+            title: 'Images',
+            dataIndex: 'images',
+            key: 'images',
             responsive: ['md'] as any,
             render: (_, record) => {
                 return (
@@ -78,56 +74,37 @@ export default function Reports() {
                             gap: 12,
                         }}
                     >
-                        <img
-                            src={
-                                record?.type === 'User'
-                                    ? record?.reportedUser?.image?.startsWith('http')
-                                        ? record.reportedUser.image
-                                        : `${imageUrl}${record?.reportedUser?.image}`
-                                    : record?.item?.images?.[0]?.startsWith('http')
-                                    ? record.item.images?.[0]
-                                    : `${imageUrl}${record.item.images?.[0]}`
-                            }
-                            className="w-10 h-10 object-cover rounded-full"
-                        />
-
-                        <p className="text-sm capitalize">{record?.user?.name}</p>
+                        {record?.images?.map((image: string, index: number) => (
+                            <img
+                                key={index}
+                                src={image.startsWith('http') ? image : `${imageUrl}${image}`}
+                                className="w-10 h-10 object-cover rounded-full"
+                            />
+                        ))}
                     </div>
                 );
             },
         },
         {
-            title: 'Description',
-            dataIndex: 'reson',
-            key: 'reson',
-            responsive: ['md'] as any,
-            render: (text) => {
-                const shortText = text && text.length > 15 ? text.substring(0, 15) + '...' : text;
-                return (
-                    <span className="w-40 flex justify-between items-center">
-                        {shortText}
-                        {text && text.length > 15 && (
-                            <Tooltip title={text}>
-                                <BsThreeDots className="ml-2 bg-[#2e4f3e26] h-6 w-6 rounded-sm p-1 cursor-pointer shadow" />
-                            </Tooltip>
-                        )}
-                    </span>
-                );
-            },
+            title: 'Date',
+            dataIndex: 'date',
+            key: 'date',
+            render: (_, record) => <span>{moment(record?.date).format('YYYY-MM-DD')}</span>,
         },
         {
-            title: 'Action',
-            key: 'action',
-            render: (_: any, record: Report) => (
-                <div className="flex gap-2">
-                    <Button
-                        type="text"
-                        icon={<AiOutlineInfoCircle size={24} />}
-                        className="text-gray-500 hover:text-blue-500"
-                        onClick={() => setShowOrderDetails(record)}
-                    />
-                </div>
-            ),
+            title: 'Max Participants',
+            dataIndex: 'max_participants',
+            key: 'max_participants',
+        },
+        {
+            title: 'Current Participants',
+            dataIndex: 'current_participants',
+            key: 'current_participants',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+            key: 'address',
         },
     ];
 
@@ -181,18 +158,6 @@ export default function Reports() {
                     />
                 </ConfigProvider>
             </div>
-
-            <Modal
-                width={500}
-                centered
-                open={!!showOrderDetails}
-                onCancel={() => setShowOrderDetails(null)}
-                footer={false}
-            >
-                <div>
-                    <p className="text-lg">Reason: {showOrderDetails?.reson}</p>
-                </div>
-            </Modal>
         </>
     );
 }

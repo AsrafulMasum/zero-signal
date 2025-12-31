@@ -18,7 +18,7 @@ const statusColorMap = {
 
 export default function Users({ dashboard }: { dashboard?: boolean }) {
     const [page, setPage] = useState(1);
-    const pageSize = 8;
+    const pageSize = 7;
     const [searchText, setSearchText] = useState('');
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);

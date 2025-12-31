@@ -10,6 +10,7 @@ import { TfiLocationPin } from 'react-icons/tfi';
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
 import { BiSupport } from 'react-icons/bi';
 import { GoQuestion } from 'react-icons/go';
+import { FiActivity } from 'react-icons/fi';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -41,6 +42,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Spots',
         path: 'spots',
         icon: <TfiLocationPin size={24} />,
+    },
+    {
+        key: 'activity',
+        label: 'Activity',
+        path: 'activity',
+        icon: <FiActivity size={24} />,
     },
     {
         key: 'supports',

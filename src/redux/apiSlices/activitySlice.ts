@@ -1,11 +1,11 @@
 import { api } from '../api/baseApi';
 
-const reportsSlice = api.injectEndpoints({
+const activitySlice = api.injectEndpoints({
     endpoints: (builder) => ({
-        getAllReports: builder.query({
+        getAllActivity: builder.query({
             query: ({ page, limit, searchTerm }: { page?: number; limit?: number; searchTerm?: string }) => {
                 return {
-                    url: `/report?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
+                    url: `/activity?type=admin&page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
                     method: 'GET',
                 };
             },
@@ -13,4 +13,4 @@ const reportsSlice = api.injectEndpoints({
     }),
 });
 
-export const { useGetAllReportsQuery } = reportsSlice;
+export const { useGetAllActivityQuery } = activitySlice;

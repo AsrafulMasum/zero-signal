@@ -18,6 +18,7 @@ import Reports from '../pages/dashboard/reports';
 import FAQ from '../pages/dashboard/faq';
 import Supports from '../pages/dashboard/supports';
 import PrivateRoute from '../provider/PrivateRoutes';
+import Activity from '../pages/dashboard/activity';
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
             { path: 'categories', element: <Category /> },
             { path: 'spots', element: <Spots /> },
             { path: 'reports', element: <Reports /> },
+            { path: 'activity', element: <Activity /> },
             { path: 'supports', element: <Supports /> },
             { path: 'profile', element: <Profile /> },
             { path: 'notification', element: <Notification /> },
