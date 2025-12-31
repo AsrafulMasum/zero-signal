@@ -1,22 +1,47 @@
-import { Button, ConfigProvider, Input, Table } from 'antd';
+import { Button, ConfigProvider, Input, Modal, Table } from 'antd';
 import type { ColumnType } from 'antd/es/table/interface';
 import HeaderTitle from '../../../components/shared/HeaderTitle';
 import { Spot } from '../../../types/types';
 import { CiCircleInfo } from 'react-icons/ci';
 import { useState } from 'react';
 import OrderDetailsModal from '../../../components/modals/OrderDetailsModal';
-import { useGetSpotsQuery } from '../../../redux/apiSlices/spotsSlice';
+import { useGetSpotsQuery, useUpdateSpotStatusMutation } from '../../../redux/apiSlices/spotsSlice';
 import { imageUrl } from '../../../redux/api/baseApi';
 import { IoCheckmarkOutline } from 'react-icons/io5';
 import { IoMdClose } from 'react-icons/io';
+import toast from 'react-hot-toast';
+
+type ActionType = 'APPROVED' | 'REJECTED' | null;
 
 export default function Spots() {
     const limit = 8;
     const [page, setPage] = useState(1);
     const [searchText, setSearchText] = useState('');
     const [showOrderDetails, setShowOrderDetails] = useState<Spot | null>(null);
-    const { data } = useGetSpotsQuery({ page, limit, searchTerm: searchText });
+    const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+    const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+    const [actionType, setActionType] = useState<ActionType>(null);
+    const { data, refetch } = useGetSpotsQuery({ page, limit, searchTerm: searchText });
     const spotsData = data?.data;
+
+    const [updateSpotStatus] = useUpdateSpotStatusMutation();
+
+    const handleChangeStatus = async () => {
+        if (!selectedSpot || !actionType) return;
+
+        try {
+            const res = await updateSpotStatus({ id: selectedSpot._id, status: actionType });
+            if (res?.data?.success) {
+                toast.success(res?.data?.message);
+                refetch();
+                setIsApproveModalOpen(false);
+                setSelectedSpot(null);
+                setActionType(null);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -85,18 +110,31 @@ export default function Spots() {
                         className="text-gray-500 hover:text-blue-500"
                         onClick={() => setShowOrderDetails(record)}
                     />
-                    <Button
-                        type="text"
-                        icon={<IoCheckmarkOutline size={24} />}
-                        className="text-[#2E4F3E] hover:text-[#2E4F3E]"
-                        onClick={() => setShowOrderDetails(record)}
-                    />
-                    <Button
-                        type="text"
-                        icon={<IoMdClose size={24} />}
-                        className="text-red-500 hover:text-red-500"
-                        onClick={() => setShowOrderDetails(record)}
-                    />
+                    {record?.status === 'PENDING' && (
+                        <>
+                            <Button
+                                type="text"
+                                icon={<IoCheckmarkOutline size={24} />}
+                                className="text-[#2E4F3E]"
+                                onClick={() => {
+                                    setSelectedSpot(record);
+                                    setActionType('APPROVED');
+                                    setIsApproveModalOpen(true);
+                                }}
+                            />
+
+                            <Button
+                                type="text"
+                                icon={<IoMdClose size={24} />}
+                                className="text-red-500"
+                                onClick={() => {
+                                    setSelectedSpot(record);
+                                    setActionType('REJECTED');
+                                    setIsApproveModalOpen(true);
+                                }}
+                            />
+                        </>
+                    )}
                 </div>
             ),
         },
@@ -153,6 +191,24 @@ export default function Spots() {
                 </ConfigProvider>
             </div>
             <OrderDetailsModal showOrderDetails={showOrderDetails} setShowOrderDetails={setShowOrderDetails} />
+            <ConfigProvider theme={{ token: { colorPrimary: '#2E4F3E' } }}>
+                <Modal
+                    centered
+                    title="Access Confirmation"
+                    open={isApproveModalOpen}
+                    onCancel={() => setIsApproveModalOpen(false)}
+                    onOk={handleChangeStatus}
+                    okText={actionType === 'APPROVED' ? 'Approve' : 'Reject'}
+                    okButtonProps={{
+                        danger: actionType === 'REJECTED',
+                    }}
+                >
+                    <p className="text-gray-600">
+                        Are you sure you want to <strong>{actionType === 'APPROVED' ? 'approve' : 'reject'}</strong>{' '}
+                        this spot?
+                    </p>
+                </Modal>
+            </ConfigProvider>
         </>
     );
 }

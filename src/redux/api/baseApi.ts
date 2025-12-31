@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const api = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://shariful5000.binarybards.online/api/v1',
+        baseUrl: 'http://72.167.224.54:5012/api/v1',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem('token');
             if (token && token !== 'undefined') {
@@ -16,4 +16,4 @@ export const api = createApi({
     tagTypes: ['notifications'],
 });
 
-export const imageUrl = 'https://shariful5000.binarybards.online';
+export const imageUrl = 'http://72.167.224.54:5012';

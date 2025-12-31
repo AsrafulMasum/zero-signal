@@ -8,7 +8,15 @@ const spotsSlice = api.injectEndpoints({
                 method: 'GET',
             }),
         }),
+
+        updateSpotStatus: builder.mutation({
+            query: ({ id, status }: { id: string; status: string }) => ({
+                method: 'PATCH',
+                url: `/spot/change-status/${id}`,
+                body: { status },
+            }),
+        }),
     }),
 });
 
-export const { useGetSpotsQuery } = spotsSlice;
+export const { useGetSpotsQuery, useUpdateSpotStatusMutation } = spotsSlice;

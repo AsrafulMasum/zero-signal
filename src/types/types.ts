@@ -95,11 +95,13 @@ export interface INotification {
 }
 
 export interface Spot {
+    _id: string;
     user: {
         name: string;
     };
     images: string[];
     email: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
     key: string;
     orderNumber: string;
     customerName: string;
@@ -110,7 +112,6 @@ export interface Spot {
     revenue: number;
     orderData: string;
     deliveryStatus: 'pending' | 'completed' | 'cancelled' | 'delivered';
-    status: 'active' | 'inactive';
     productImage: string;
 }
 
@@ -159,7 +160,7 @@ export interface Support {
     item: {
         title: string;
         images: string[];
-    }
+    };
     message: string;
     createdAt: string;
     reson: string;
